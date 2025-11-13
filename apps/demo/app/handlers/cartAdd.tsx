@@ -2,7 +2,6 @@
 // Code-split handler for cart.add jobs - only loads when needed
 // This handler can return JSX components that will be rendered automatically
 // All imports (including React components) will be bundled together
-import React from 'react';
 import type { Job } from 'nextmq';
 import type { ReactElement } from 'react';
 

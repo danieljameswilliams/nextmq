@@ -1,20 +1,58 @@
 // src/NextMQRootClientEventBridge.tsx
+/**
+ * NextMQ Event Bridge - Listens for CustomEvents and routes them to the JobQueue.
+ * 
+ * **Simple Flow:** CustomEvent → EventBridge → Provider → Processor → Handler
+ * 
+ * This component:
+ * 1. Listens for 'nextmq:invoke' CustomEvents on the window
+ * 2. Buffers events if the processor isn't ready yet
+ * 3. Routes events to the JobQueue when the processor is ready
+ * 
+ * Place this component in your root layout, alongside NextMQClientProvider.
+ * 
+ * @example
+ * ```tsx
+ * // app/layout.tsx
+ * import { NextMQRootClientEventBridge, NextMQClientProvider } from 'nextmq';
+ * 
+ * export default function RootLayout({ children }) {
+ *   return (
+ *     <html>
+ *       <body>
+ *         <NextMQRootClientEventBridge />
+ *         <NextMQClientProvider processor={processor}>
+ *           {children}
+ *         </NextMQClientProvider>
+ *       </body>
+ *     </html>
+ *   );
+ * }
+ * ```
+ */
+
 'use client';
 
 import { useEffect } from 'react';
 import { NEXTMQ_EVENT_NAME, type NextmqEventDetail } from './events';
 
-// Event buffer to store events until the processor is ready
+/** Event buffer to store events until the processor is ready */
 const eventBuffer: CustomEvent<NextmqEventDetail>[] = [];
 
-// Callback to process events (set by NextMQRootClientContextProvider)
+/** Callback to process events (set by NextMQClientProvider) */
 let processEventCallback: ((event: CustomEvent<NextmqEventDetail>) => void) | null = null;
 
+/**
+ * Set the callback to process events.
+ * When set, processes any buffered events immediately.
+ * @internal Used by NextMQClientProvider
+ */
 export function setProcessEventCallback(
   callback: (event: CustomEvent<NextmqEventDetail>) => void,
 ) {
   processEventCallback = callback;
-  // Process any buffered events
+  
+  // Process any buffered events now that processor is ready
   while (eventBuffer.length > 0) {
     const event = eventBuffer.shift();
     if (event) {
@@ -23,12 +61,16 @@ export function setProcessEventCallback(
   }
 }
 
+/**
+ * Clear the event processing callback.
+ * @internal Used by NextMQClientProvider on unmount
+ */
 export function clearProcessEventCallback() {
   processEventCallback = null;
 }
 
 /**
- * Debug function: Get current event buffer state
+ * Get current event buffer state for debugging.
  * @internal For DevTools only
  */
 export function getEventBufferState() {
@@ -45,15 +87,14 @@ export function getEventBufferState() {
 }
 
 /**
- * Root-level client event bridge that ONLY initializes event listeners.
- * It listens for CustomEvents and either processes them immediately
- * (if processor is ready) or buffers them until the processor loads.
+ * NextMQ Event Bridge Component
  * 
- * Place this component in your root layout.
+ * Listens for 'nextmq:invoke' CustomEvents and routes them to the JobQueue.
+ * Events are buffered if the processor isn't ready yet.
  */
 export function NextMQRootClientEventBridge() {
   useEffect(() => {
-    const handler = (evt: Event) => {
+    const handleEvent = (evt: Event) => {
       const customEvent = evt as CustomEvent<NextmqEventDetail>;
 
       if (processEventCallback) {
@@ -65,10 +106,10 @@ export function NextMQRootClientEventBridge() {
       }
     };
 
-    window.addEventListener(NEXTMQ_EVENT_NAME, handler);
+    window.addEventListener(NEXTMQ_EVENT_NAME, handleEvent);
 
     return () => {
-      window.removeEventListener(NEXTMQ_EVENT_NAME, handler as EventListener);
+      window.removeEventListener(NEXTMQ_EVENT_NAME, handleEvent as EventListener);
     };
   }, []);
 

@@ -1,28 +1,59 @@
 // src/NextMQDevTools.tsx
+/**
+ * NextMQ DevTools - Development tool for debugging NextMQ jobs and events
+ * 
+ * Displays:
+ * - Event buffer state (events waiting for processor)
+ * - Job queue state (jobs waiting to be processed)
+ * - Requirement status for each job
+ * 
+ * @example
+ * ```tsx
+ * import { NextMQDevTools } from 'nextmq';
+ * 
+ * export default function Page() {
+ *   return (
+ *     <>
+ *       <NextMQDevTools />
+ *       <YourPageContent />
+ *     </>
+ *   );
+ * }
+ * ```
+ */
+
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useContext } from 'react';
-import { NextmqContext } from './NextMQRootClientContextProvider';
+import { useState, useEffect, useContext } from 'react';
+import { NextmqContext } from './NextMQClientProvider';
 import { getEventBufferState } from './NextMQRootClientEventBridge';
 import { getRequirement } from './requirements';
 
+/** Debug state structure for job queue */
+type QueueDebugState = {
+  queue: Array<{
+    id: string;
+    type: string;
+    payload: unknown;
+    requirements?: string[];
+    createdAt: number;
+    requirementsMet: boolean;
+    hasProcessor: boolean;
+  }>;
+  isProcessing: boolean;
+  processorReady: boolean;
+};
+
+/**
+ * NextMQ DevTools Component
+ * 
+ * Provides a floating panel for debugging NextMQ jobs and events.
+ * Only renders on the client to avoid hydration mismatches.
+ */
 export function NextMQDevTools() {
+  const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const queue = useContext(NextmqContext);
-  type QueueDebugState = {
-    queue: Array<{
-      id: string;
-      type: string;
-      payload: unknown;
-      requirements?: string[];
-      createdAt: number;
-      requirementsMet: boolean;
-      hasProcessor: boolean;
-    }>;
-    isProcessing: boolean;
-    processorReady: boolean;
-  };
 
   const [debugState, setDebugState] = useState<{
     eventBuffer: ReturnType<typeof getEventBufferState>;
@@ -31,6 +62,11 @@ export function NextMQDevTools() {
     eventBuffer: getEventBufferState(),
     queue: null,
   });
+
+  // Only render on client to avoid hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -51,7 +87,8 @@ export function NextMQDevTools() {
     return () => clearInterval(interval);
   }, [isOpen, queue]);
 
-  if (typeof window === 'undefined') return null;
+  // Don't render anything on server to avoid hydration mismatch
+  if (!isMounted) return null;
 
   return (
     <div

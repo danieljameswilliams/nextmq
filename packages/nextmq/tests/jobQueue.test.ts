@@ -11,9 +11,13 @@ describe('JobQueue requirements', () => {
 
   it('does not process jobs until requirements are met', async () => {
     const queue = new JobQueue();
-    const handler = vi.fn(async () => { });
+    const handler = vi.fn(async (job) => {
+      if (job.type === 'track.relewise') {
+        // Handler logic
+      }
+    });
 
-    queue.registerProcessor('track.relewise', handler);
+    queue.setProcessor(handler);
 
     queue.enqueue(
       'track.relewise',
@@ -21,7 +25,7 @@ describe('JobQueue requirements', () => {
       ['cookieConsent:marketing'],
     );
 
-    // Give queue time to run (it shouldn’t)
+    // Give queue time to run (it shouldn't)
     await new Promise((r) => setTimeout(r, 10));
     expect(handler).not.toHaveBeenCalled();
 

@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { NextMQRootClientContextProvider } from '../src/NextMQRootClientContextProvider';
+import { NextMQClientProvider } from '../src/NextMQClientProvider';
 import { NextMQRootClientEventBridge } from '../src/NextMQRootClientEventBridge';
 import { NEXTMQ_EVENT_NAME } from '../src/events';
 import type { Job } from '../src/JobQueue';
@@ -18,9 +18,9 @@ describe('NextMQRootClientEventBridge', () => {
     };
 
     render(
-      <NextMQRootClientContextProvider processor={processor}>
+      <NextMQClientProvider processor={processor}>
         <NextMQRootClientEventBridge />
-      </NextMQRootClientContextProvider>,
+      </NextMQClientProvider>,
     );
 
     window.dispatchEvent(

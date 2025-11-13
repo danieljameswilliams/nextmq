@@ -166,21 +166,23 @@ export class JobQueue {
       const existingJobIndex = this.queue.findIndex((job) => job.dedupeKey === dedupeKey);
       if (existingJobIndex !== -1) {
         const existingJob = this.queue[existingJobIndex];
-        // Remove the old job and mark it as cancelled
-        this.queue.splice(existingJobIndex, 1);
-        this.updateJobStatus(existingJob.id, {
-          status: 'pending',
-          job: existingJob,
-        });
-        const isDevelopment =
-          typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
-        if (isDevelopment) {
-          console.log(
-            `[nextmq] 🔄 Job replaced (debounce): "${type}" with dedupeKey "${dedupeKey}" - previous queued job cancelled`,
-          );
+        if (existingJob) {
+          // Remove the old job and mark it as cancelled
+          this.queue.splice(existingJobIndex, 1);
+          this.updateJobStatus(existingJob.id, {
+            status: 'pending',
+            job: existingJob,
+          });
+          const isDevelopment =
+            typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+          if (isDevelopment) {
+            console.log(
+              `[nextmq] 🔄 Job replaced (debounce): "${type}" with dedupeKey "${dedupeKey}" - previous queued job cancelled`,
+            );
+          }
+          // Continue to create new job with updated payload/delay
+          // This enables debouncing: new job replaces old one, resetting the delay timer
         }
-        // Continue to create new job with updated payload/delay
-        // This enables debouncing: new job replaces old one, resetting the delay timer
       }
     }
 

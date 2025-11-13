@@ -1,0 +1,49 @@
+{
+  "name": "nextmq",
+  "version": "0.1.0",
+  "description": "A tiny queue + actions runtime for Next.js (CustomEvent + Context + code-splitting friendly).",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "next": ">=14"
+  },
+  "devDependencies": {
+    "tsup": "8.5.1",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.4",
+    "@types/react-dom": "19.2.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "nextjs",
+    "queue",
+    "events",
+    "messages",
+    "CustomEvent",
+    "EventEmitter",
+    "bullmq",
+    "rabbitmq",
+    "actions"
+  ],
+  "license": "MIT"
+}

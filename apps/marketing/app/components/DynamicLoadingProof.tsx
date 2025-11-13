@@ -142,10 +142,11 @@ return handler.default(job);`} language="javascript" />
         </p>
 
         <CodeBlock code={`// Example: Third-party analytics script
+// Uses your configured event name (default: 'nextmq:invoke')
 (function() {
   // This script can trigger NextMQ handlers from anywhere
   window.dispatchEvent(
-    new CustomEvent('nextmq:invoke', {
+    new CustomEvent('nextmq:invoke', { // or your custom event name
       detail: {
         type: 'analytics.track',
         payload: {
@@ -159,8 +160,9 @@ return handler.default(job);`} language="javascript" />
 
 // Example: Partner widget integration
 // Partner's script can trigger your portal dialogs
+// Works with any event name you configure
 window.dispatchEvent(
-  new CustomEvent('nextmq:invoke', {
+  new CustomEvent('nextmq:invoke', { // matches your NextMQRootClientEventBridge config
     detail: {
       type: 'portal.show',
       payload: {

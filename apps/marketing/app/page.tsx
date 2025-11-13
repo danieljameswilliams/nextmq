@@ -4,6 +4,7 @@ import { CodeBlock } from "./components/CodeBlock";
 import { DynamicLoadingProof } from "./components/DynamicLoadingProof";
 import { EventFlowVisualization } from "./components/EventFlowVisualization";
 import { JobStatusDemo } from "./components/JobStatusDemo";
+import { RotatingEventName } from "./components/RotatingEventName";
 
 export default function Home() {
   return (
@@ -22,10 +23,22 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-6">
               <Link
+                href="#how-it-works"
+                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              >
+                How it works
+              </Link>
+              <Link
                 href="#features"
                 className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
               >
                 Features
+              </Link>
+              <Link
+                href="#simply-dispatchevent"
+                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+              >
+                dispatchEvent
               </Link>
               <Link
                 href="#docs"
@@ -115,15 +128,6 @@ export default function Home() {
               Quick Navigation:
             </div>
             <nav className="flex items-center gap-2 flex-wrap">
-              <QuickNavLink href="#features" icon={<Zap className="w-3.5 h-3.5" />}>
-                Features
-              </QuickNavLink>
-              <QuickNavLink href="#simply-dispatchevent" icon={<Zap className="w-3.5 h-3.5" />}>
-                dispatchEvent
-              </QuickNavLink>
-              <QuickNavLink href="#how-it-works" icon={<Rocket className="w-3.5 h-3.5" />}>
-                How It Works
-              </QuickNavLink>
               <QuickNavLink href="#job-status" icon={<BarChart3 className="w-3.5 h-3.5" />}>
                 Job Status Hooks
               </QuickNavLink>
@@ -132,6 +136,9 @@ export default function Home() {
               </QuickNavLink>
               <QuickNavLink href="#deduplication" icon={<CheckCircle2 className="w-3.5 h-3.5" />}>
                 Deduplication
+              </QuickNavLink>
+              <QuickNavLink href="#delay" icon={<CheckCircle2 className="w-3.5 h-3.5" />}>
+                Debouncing
               </QuickNavLink>
               <QuickNavLink href="#install" icon={<Package className="w-3.5 h-3.5" />}>
                 Install
@@ -187,6 +194,12 @@ export default function Home() {
             highlight={true}
           />
           <FeatureCard
+            icon={<CheckCircle2 className="w-6 h-6" />}
+            title="Debouncing Built-In"
+            description="Delay + Deduplication = automatic debouncing! Replace previous jobs and wait for inactivity. Perfect for search inputs and analytics."
+            highlight={true}
+          />
+          <FeatureCard
             icon={<Code2 className="w-6 h-6" />}
             title="Code Splitting"
             description="Handlers are automatically code-split. Only load what you need, when you need it."
@@ -198,9 +211,12 @@ export default function Home() {
       <section id="simply-dispatchevent" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/30 dark:via-purple-950/30 dark:to-pink-950/30 rounded-3xl mx-4 sm:mx-6 lg:mx-8">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Simply dispatchEvent</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-6">
             No complex APIs. No abstractions. Just the standard web platform you already know.
           </p>
+          <div className="mt-8 mb-4">
+            <RotatingEventName />
+          </div>
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
@@ -212,18 +228,30 @@ export default function Home() {
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
                   NextMQ uses the native <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">CustomEvent</code> API. 
-                  No learning curve, no vendor lock-in. Just standard web APIs.
+                  No learning curve, no vendor lock-in. Just standard web APIs. The event name is configurable - 
+                  use the default <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">'nextmq:invoke'</code> or choose your own.
                 </p>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
                   <CodeBlock code={`import { NEXTMQ_EVENT_NAME } from 'nextmq';
 
-// That's it! Just dispatch a CustomEvent
+// Option 1: Use the default event name (convenience constant)
 window.dispatchEvent(
   new CustomEvent(NEXTMQ_EVENT_NAME, {
     detail: {
       type: 'cart.add',
       payload: { ean: '123', quantity: 1 }
     }
+  })
+);
+
+// Option 2: Use any custom event name you want
+// Just configure it in NextMQRootClientEventBridge:
+<NextMQRootClientEventBridge eventName="myApp:invoke" />
+
+// Then dispatch with the same name:
+window.dispatchEvent(
+  new CustomEvent('myApp:invoke', {
+    detail: { type: 'cart.add', payload: { ean: '123' } }
   })
 );
 
@@ -236,7 +264,7 @@ window.dispatchEvent(
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-3 gap-4">
                 <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-4">
                   <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4" />
@@ -254,6 +282,66 @@ window.dispatchEvent(
                   <p className="text-sm text-green-800 dark:text-green-200">
                     Dispatch from React, vanilla JS, third-party scripts, or browser extensions.
                   </p>
+                </div>
+                <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 rounded-lg p-4">
+                  <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-2 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Configurable Event Name
+                  </h4>
+                  <p className="text-sm text-purple-800 dark:text-purple-200">
+                    Use default 'nextmq:invoke' or choose your own. Perfect for multiple instances or avoiding conflicts.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 rounded-lg p-6 border border-purple-200 dark:border-purple-900">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  Why Custom Event Names?
+                </h4>
+                <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
+                  <div>
+                    <p className="font-semibold mb-2 text-purple-900 dark:text-purple-100">Multiple Instances</p>
+                    <p className="text-purple-800 dark:text-purple-200">
+                      Run multiple NextMQ instances in the same app with different event names. Perfect for micro-frontends or modular architectures.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold mb-2 text-blue-900 dark:text-blue-100">Avoid Conflicts</p>
+                    <p className="text-blue-800 dark:text-blue-200">
+                      Prevent conflicts with other libraries or third-party scripts that might use similar event names. Namespace your events.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold mb-2 text-purple-900 dark:text-purple-100">Integration</p>
+                    <p className="text-purple-800 dark:text-purple-200">
+                      Integrate with existing systems that have their own event naming conventions. Use their names directly.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-semibold mb-2 text-blue-900 dark:text-blue-100">Testing & Isolation</p>
+                    <p className="text-blue-800 dark:text-blue-200">
+                      Isolate event streams for testing, mocking, or staging environments. Each environment can use different event names.
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
+                  <CodeBlock code={`// Example: Multiple NextMQ instances with different event names
+
+// Main app events
+<NextMQRootClientEventBridge eventName="app:invoke" />
+<NextMQClientProvider processor={mainProcessor} />
+
+// Admin panel events (separate instance)
+<NextMQRootClientEventBridge eventName="admin:invoke" />
+<NextMQClientProvider processor={adminProcessor} />
+
+// Analytics events (separate instance)
+<NextMQRootClientEventBridge eventName="analytics:invoke" />
+<NextMQClientProvider processor={analyticsProcessor} />
+
+// Each instance listens to its own event name
+// No conflicts, complete isolation!`} />
                 </div>
               </div>
             </div>
@@ -402,6 +490,149 @@ setRequirement('necessaryConsent', true);
         </div>
       </section>
 
+      {/* Job Delay - Prominent Section */}
+      <section id="delay" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-gradient-to-br from-orange-50 via-yellow-50 to-amber-50 dark:from-orange-950/30 dark:via-yellow-950/30 dark:to-amber-950/30 rounded-3xl mx-4 sm:mx-6 lg:mx-8">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4">Debouncing: Delay + Deduplication</h2>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Combine delay with deduplication to get automatic debouncing. The same <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">dedupeKey</code> 
+            provides both behaviors: replaces queued jobs (debouncing) and skips completed jobs (deduplication).
+          </p>
+        </div>
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+                  <CheckCircle2 className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                  Debouncing Built-In: Delay + Deduplication
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Combine <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">delay</code> with <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">dedupeKey</code> to get 
+                  automatic debouncing! Here's how it works:
+                </p>
+                <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-4 mb-6">
+                  <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" />
+                    How dedupeKey Works
+                  </h4>
+                  <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
+                    <li className="flex items-start gap-2">
+                      <span className="font-bold">If already queued:</span>
+                      <span>New job <strong>replaces</strong> the previous one (debouncing) - resets the delay timer</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-bold">If already completed:</span>
+                      <span>New job is <strong>skipped</strong> (deduplication) - prevents duplicate execution</span>
+                    </li>
+                  </ul>
+                  <p className="text-sm text-blue-700 dark:text-blue-300 mt-3">
+                    The same <code className="bg-blue-100 dark:bg-blue-900/50 px-1.5 py-0.5 rounded">dedupeKey</code> provides both behaviors automatically!
+                  </p>
+                </div>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Perfect for search inputs, analytics tracking, and any scenario where you want to wait for inactivity.
+                </p>
+                <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
+                  <CodeBlock code={`// True debouncing: delay + dedupeKey
+// Multiple rapid calls → only the last one executes after delay
+window.dispatchEvent(
+  new CustomEvent('nextmq:invoke', {
+    detail: {
+      type: 'analytics.track',
+      payload: { event: 'search', query: 'nextjs' },
+      dedupeKey: 'search-analytics', // Same key = debounce
+      delay: 500 // ⏳ Wait 500ms after last call
+    }
+  })
+);
+
+// Schedule notification for 2 seconds later (no dedupeKey = no debounce)
+window.dispatchEvent(
+  new CustomEvent('nextmq:invoke', {
+    detail: {
+      type: 'notification.show',
+      payload: { message: 'Welcome!' },
+      delay: 2000 // ⏳ Wait 2 seconds before processing
+    }
+  })
+);`} />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900 rounded-lg p-4">
+                  <h4 className="font-semibold text-orange-900 dark:text-orange-100 mb-2 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    Use Cases
+                  </h4>
+                  <ul className="text-sm text-orange-800 dark:text-orange-200 space-y-1">
+                    <li>• Debouncing user input</li>
+                    <li>• Rate limiting API calls</li>
+                    <li>• Scheduled notifications</li>
+                    <li>• Delayed animations</li>
+                    <li>• Staggered batch processing</li>
+                  </ul>
+                </div>
+                <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900 rounded-lg p-4">
+                  <h4 className="font-semibold text-yellow-900 dark:text-yellow-100 mb-2 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    How It Works
+                  </h4>
+                  <ul className="text-sm text-yellow-800 dark:text-yellow-200 space-y-1">
+                    <li>• Delay is calculated from job creation time</li>
+                    <li>• Jobs wait in queue until delay elapses</li>
+                    <li>• With dedupeKey: replaces previous job (debouncing)</li>
+                    <li>• Works seamlessly with requirements</li>
+                    <li>• Non-blocking - other jobs can process</li>
+                    <li>• Automatic retry scheduling</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-950/30 dark:to-yellow-950/30 rounded-lg p-6 border border-orange-200 dark:border-orange-900">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                  Example: Debounced Search (Delay + Deduplication)
+                </h4>
+                <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
+                  <CodeBlock code={`import { NEXTMQ_EVENT_NAME } from 'nextmq';
+
+function SearchInput() {
+  const handleInput = (e) => {
+    // Dispatch with delay + dedupeKey = automatic debouncing!
+    window.dispatchEvent(
+      new CustomEvent(NEXTMQ_EVENT_NAME, {
+        detail: {
+          type: 'search.perform',
+          payload: { query: e.target.value },
+          dedupeKey: 'search-query', // Same key = replaces previous job (enables debouncing)
+          delay: 300 // Debounce: wait 300ms after last keystroke before processing
+        }
+      })
+    );
+  };
+
+  return <input onChange={handleInput} />;
+}
+
+// User types "n", "e", "x", "t" rapidly:
+// - "n" → queued, waits 300ms (dedupeKey: "search-query")
+// - "e" → replaces "n" (debouncing), waits 300ms  
+// - "x" → replaces "e" (debouncing), waits 300ms
+// - "t" → replaces "x" (debouncing), waits 300ms
+// → Only "next" search executes after 300ms of inactivity
+// 
+// If user types again after search completes:
+// - New job with same dedupeKey → skipped (deduplication)
+// Perfect debouncing + deduplication! 🎯`} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Job Deduplication - Prominent Section */}
       <section id="deduplication" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
@@ -526,7 +757,7 @@ window.dispatchEvent(
           <Step
             number={1}
             title="Set up EventBridge and Provider"
-            description="Add NextMQ components to your root layout"
+            description="Add NextMQ components to your root layout. Optionally customize the event name."
             code={`// app/layout.tsx
 import { NextMQRootClientEventBridge, NextMQClientProvider } from 'nextmq';
 import processor from './processors';
@@ -535,7 +766,12 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body>
+        {/* Default: listens for 'nextmq:invoke' */}
         <NextMQRootClientEventBridge />
+        
+        {/* Or use a custom event name: */}
+        {/* <NextMQRootClientEventBridge eventName="myApp:invoke" /> */}
+        
         <NextMQClientProvider processor={processor}>
           {children}
         </NextMQClientProvider>
@@ -580,19 +816,28 @@ export default async function cartAddHandler(
           <Step
             number={4}
             title="Dispatch Jobs"
-            description="Send jobs via CustomEvent with optional deduplication"
+            description="Send jobs via CustomEvent. Use NEXTMQ_EVENT_NAME constant or your custom event name."
             code={`import { NEXTMQ_EVENT_NAME } from 'nextmq';
 
+// Option 1: Use the default event name (convenience)
 window.dispatchEvent(
   new CustomEvent(NEXTMQ_EVENT_NAME, {
     detail: {
       type: 'cart.add',
       payload: { ean: '123', quantity: 1 },
       requirements: ['necessaryConsent'], // Optional
-      dedupeKey: 'cart-add-123' // Optional: prevent duplicates
+      dedupeKey: 'cart-add-123', // Optional: prevent duplicates
+      delay: 500 // Optional: delay in milliseconds
     }
   })
-);`}
+);
+
+// Option 2: Use your custom event name (if configured)
+// window.dispatchEvent(
+//   new CustomEvent('myApp:invoke', { // matches eventName prop
+//     detail: { type: 'cart.add', payload: { ean: '123' } }
+//   })
+// );`}
           />
         </div>
       </section>

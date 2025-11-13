@@ -344,6 +344,7 @@ export function EventFlowVisualization() {
             <div>
               <p className="text-gray-500 mb-1">{'// 2. Events arrive early - buffered automatically'}</p>
               <p className="text-blue-400">window.dispatchEvent(new CustomEvent('nextmq:invoke', ...))</p>
+              <p className="text-xs text-gray-500 mt-1">{'// (or your custom event name)'}</p>
             </div>
             <div>
               <p className="text-gray-500 mb-1">{'// 3. Processor loads dynamically (code-split)'}</p>

@@ -114,8 +114,8 @@ export function NextMQClientProvider({
   // Connect to EventBridge to receive CustomEvents
   useEffect(() => {
     const processEvent = (event: CustomEvent<NextmqEventDetail>) => {
-      const { type, payload, requirements, dedupeKey } = event.detail;
-      queue.enqueue(type, payload, requirements, dedupeKey);
+      const { type, payload, requirements, dedupeKey, delay } = event.detail;
+      queue.enqueue(type, payload, requirements, dedupeKey, delay);
     };
 
     setProcessEventCallback(processEvent);

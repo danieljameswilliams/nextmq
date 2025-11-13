@@ -40,8 +40,10 @@ export interface Job<TPayload = unknown> {
   payload: TPayload;
   /** Optional requirement keys that must be met before processing */
   requirements?: RequirementKey[];
-  /** Optional deduplication key - jobs with the same dedupeKey will be skipped if already processed or queued */
+  /** Optional deduplication key - jobs with the same dedupeKey will replace previous queued jobs (enables debouncing when combined with delay) */
   dedupeKey?: string;
+  /** Optional delay in milliseconds before processing. Job will wait until createdAt + delay has passed. Combine with dedupeKey for debouncing. */
+  delay?: number;
   /** Timestamp when job was created */
   createdAt: number;
 }
@@ -125,18 +127,30 @@ export class JobQueue {
    * @param type - Job type identifier (e.g., 'cart.add')
    * @param payload - Job payload data
    * @param requirements - Optional requirement keys that must be met before processing
-   * @param dedupeKey - Optional deduplication key. Jobs with the same dedupeKey will be skipped if already processed or queued
-   * @returns Job ID for tracking, or null if job was deduplicated
+   * @param dedupeKey - Optional deduplication key. Behavior depends on job state:
+   *   - If already completed: job is skipped (deduplication)
+   *   - If already queued: previous job is replaced (enables debouncing when combined with delay)
+   * @param delay - Optional delay in milliseconds before processing. Job will wait until createdAt + delay has passed
+   * @returns Job ID for tracking, or null if job was deduplicated (already completed)
+   * 
+   * @example
+   * // Debouncing: delay + dedupeKey
+   * queue.enqueue('search.perform', { query: 'nextjs' }, [], 'search-query', 300);
+   * // Multiple calls with same dedupeKey:
+   * // - If already queued: replaces previous job (resets delay timer)
+   * // - If already completed: skipped (deduplication)
+   * // Only the last queued job executes after 300ms delay
    */
   enqueue<TPayload>(
     type: JobType,
     payload: TPayload,
     requirements: RequirementKey[] = [],
     dedupeKey?: string,
+    delay?: number,
   ): string | null {
     // Check for duplicate if dedupeKey is provided
     if (dedupeKey) {
-      // Check if already completed
+      // Check if already completed - skip (deduplication)
       if (this.completedJobs.has(dedupeKey)) {
         const isDevelopment =
           typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
@@ -148,17 +162,25 @@ export class JobQueue {
         return null;
       }
 
-      // Check if already in queue
-      const alreadyQueued = this.queue.some((job) => job.dedupeKey === dedupeKey);
-      if (alreadyQueued) {
+      // Check if already in queue - replace it (for debouncing behavior)
+      const existingJobIndex = this.queue.findIndex((job) => job.dedupeKey === dedupeKey);
+      if (existingJobIndex !== -1) {
+        const existingJob = this.queue[existingJobIndex];
+        // Remove the old job and mark it as cancelled
+        this.queue.splice(existingJobIndex, 1);
+        this.updateJobStatus(existingJob.id, {
+          status: 'pending',
+          job: existingJob,
+        });
         const isDevelopment =
           typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
         if (isDevelopment) {
           console.log(
-            `[nextmq] ⏭️ Job skipped (duplicate): "${type}" with dedupeKey "${dedupeKey}" - already queued`,
+            `[nextmq] 🔄 Job replaced (debounce): "${type}" with dedupeKey "${dedupeKey}" - previous queued job cancelled`,
           );
         }
-        return null;
+        // Continue to create new job with updated payload/delay
+        // This enables debouncing: new job replaces old one, resetting the delay timer
       }
     }
 
@@ -168,6 +190,7 @@ export class JobQueue {
       payload,
       requirements,
       dedupeKey,
+      delay,
       createdAt: Date.now(),
     };
 
@@ -244,6 +267,11 @@ export class JobQueue {
     return job.requirements.every((k) => getRequirement(k));
   }
 
+  private delayElapsed(job: Job) {
+    if (!job.delay) return true;
+    return Date.now() >= job.createdAt + job.delay;
+  }
+
   /**
    * Process jobs from the queue sequentially.
    * Only processes jobs that meet their requirements.
@@ -256,11 +284,32 @@ export class JobQueue {
 
     try {
       while (this.queue.length > 0) {
-        // Find first job that meets requirements
-        const jobIndex = this.queue.findIndex((job) => this.requirementsMet(job));
+        // Find first job that meets requirements and delay has elapsed
+        const jobIndex = this.queue.findIndex(
+          (job) => this.requirementsMet(job) && this.delayElapsed(job),
+        );
         
         // No processable job found
-        if (jobIndex === -1) break;
+        if (jobIndex === -1) {
+          // If there are jobs waiting for delay, schedule a retry
+          const hasDelayedJobs = this.queue.some((job) => job.delay && !this.delayElapsed(job));
+          if (hasDelayedJobs) {
+            // Find the earliest delayed job and schedule retry
+            const delayedJobs = this.queue.filter((job) => job.delay && !this.delayElapsed(job));
+            if (delayedJobs.length > 0) {
+              const earliestDelay = Math.min(
+                ...delayedJobs.map((job) => job.createdAt + (job.delay || 0) - Date.now()),
+              );
+              // Wait until the earliest delayed job is ready, but cap at reasonable interval
+              await new Promise((resolve) =>
+                setTimeout(resolve, Math.max(0, Math.min(earliestDelay, 1000))),
+              );
+              // Continue loop to check again
+              continue;
+            }
+          }
+          break;
+        }
 
         // Remove and process the job
         const job = this.queue.splice(jobIndex, 1)[0];

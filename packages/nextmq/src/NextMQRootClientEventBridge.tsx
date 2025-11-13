@@ -5,7 +5,7 @@
  * **Simple Flow:** CustomEvent → EventBridge → Provider → Processor → Handler
  * 
  * This component:
- * 1. Listens for 'nextmq:invoke' CustomEvents on the window
+ * 1. Listens for CustomEvents on the window (default: 'nextmq:invoke', configurable via eventName prop)
  * 2. Buffers events if the processor isn't ready yet
  * 3. Routes events to the JobQueue when the processor is ready
  * 
@@ -28,6 +28,19 @@
  *     </html>
  *   );
  * }
+ * ```
+ * 
+ * @example
+ * ```tsx
+ * // Using a custom event name
+ * <NextMQRootClientEventBridge eventName="helloMcNerd" />
+ * 
+ * // Then dispatch events with the same name:
+ * window.dispatchEvent(
+ *   new CustomEvent('helloMcNerd', {
+ *     detail: { type: 'cart.add', payload: { ean: '123' } }
+ *   })
+ * );
  * ```
  */
 
@@ -79,6 +92,14 @@ export function clearProcessEventCallback() {
 }
 
 /**
+ * Clear the event buffer (for testing only)
+ * @internal For tests only
+ */
+export function clearEventBuffer() {
+  eventBuffer.length = 0;
+}
+
+/**
  * Get current event buffer state for debugging.
  * @internal For DevTools only
  */
@@ -98,13 +119,20 @@ export function getEventBufferState() {
 /**
  * NextMQ Event Bridge Component
  * 
- * Listens for 'nextmq:invoke' CustomEvents and routes them to the JobQueue.
+ * Listens for CustomEvents and routes them to the JobQueue.
  * Events are buffered if the processor isn't ready yet.
  * 
  * ⚠️ **IMPORTANT:** This component must be placed in your root layout (app/layout.tsx)
  * alongside NextMQClientProvider, not in nested layouts or pages.
+ * 
+ * @param eventName - Optional custom event name to listen for. Defaults to 'nextmq:invoke'.
+ *                    If you use a custom name, make sure to dispatch events with the same name.
  */
-export function NextMQRootClientEventBridge() {
+export function NextMQRootClientEventBridge({
+  eventName = NEXTMQ_EVENT_NAME,
+}: {
+  eventName?: string;
+} = {}) {
   useEffect(() => {
     eventBridgeMounted = true;
 
@@ -135,10 +163,10 @@ export function NextMQRootClientEventBridge() {
       // Validate event structure
       if (isDevelopment && !customEvent.detail) {
         console.error(
-          '[nextmq] ❌ Invalid CustomEvent: missing "detail" property.\n' +
+          `[nextmq] ❌ Invalid CustomEvent: missing "detail" property.\n` +
           'Events must be dispatched with this structure:\n' +
-          '  window.dispatchEvent(\n' +
-          '    new CustomEvent("nextmq:invoke", {\n' +
+          `  window.dispatchEvent(\n` +
+          `    new CustomEvent("${eventName}", {\n` +
           '      detail: {\n' +
           '        type: "your.job.type",\n' +
           '        payload: { /* your data */ },\n' +
@@ -174,16 +202,16 @@ export function NextMQRootClientEventBridge() {
       }
     };
 
-    window.addEventListener(NEXTMQ_EVENT_NAME, handleEvent);
+    window.addEventListener(eventName, handleEvent);
 
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
-      window.removeEventListener(NEXTMQ_EVENT_NAME, handleEvent as EventListener);
+      window.removeEventListener(eventName, handleEvent as EventListener);
       eventBridgeMounted = false;
     };
-  }, []);
+  }, [eventName]);
 
   return null;
 }

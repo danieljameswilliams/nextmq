@@ -15,12 +15,12 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
-    "pretest": "npm run build",
+    "prebuild": "npm run test",
     "test": "vitest run",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run test && npm run build"
   },
   "peerDependencies": {
     "react": ">=18",

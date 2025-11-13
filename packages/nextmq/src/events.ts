@@ -16,7 +16,8 @@
  *     detail: {
  *       type: 'cart.add',
  *       payload: { ean: '123', quantity: 1 },
- *       requirements: ['necessaryConsent'] // Optional: gate until requirement is met
+ *       requirements: ['necessaryConsent'], // Optional: gate until requirement is met
+ *       delay: 500 // Optional: delay in milliseconds before processing
  *     }
  *   })
  * );
@@ -39,4 +40,6 @@ export interface NextmqEventDetail {
   requirements?: RequirementKey[];
   /** Optional deduplication key. Jobs with the same dedupeKey will be skipped if already processed or queued */
   dedupeKey?: string;
+  /** Optional delay in milliseconds before processing. Job will wait until createdAt + delay has passed */
+  delay?: number;
 }

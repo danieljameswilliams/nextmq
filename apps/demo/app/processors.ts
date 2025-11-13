@@ -9,12 +9,12 @@ const processor: Processor = async (job) => {
   switch (job.type) {
     case 'cart.add': {
       const handler = await import('./handlers/cartAdd');
-      return handler.default(job);
+      return handler.default(job as Parameters<typeof handler.default>[0]);
     }
 
     case 'cart.remove': {
       const handler = await import('./handlers/cartRemove');
-      return handler.default(job);
+      return handler.default(job as Parameters<typeof handler.default>[0]);
     }
 
     default:

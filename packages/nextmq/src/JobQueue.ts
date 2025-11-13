@@ -40,6 +40,8 @@ export interface Job<TPayload = unknown> {
   payload: TPayload;
   /** Optional requirement keys that must be met before processing */
   requirements?: RequirementKey[];
+  /** Optional deduplication key - jobs with the same dedupeKey will be skipped if already processed or queued */
+  dedupeKey?: string;
   /** Timestamp when job was created */
   createdAt: number;
 }
@@ -53,11 +55,33 @@ export type Processor<TPayload = unknown> = (job: Job<TPayload>) => Promise<Proc
 /** Callback for rendering JSX components returned from processors */
 export type RenderCallback = (element: React.ReactElement | null, jobId: string) => void;
 
+/** Job status type */
+export type JobStatus = 'pending' | 'processing' | 'completed' | 'failed';
+
+/** Job status information */
+export interface JobStatusInfo {
+  status: JobStatus;
+  result?: ProcessorResult;
+  error?: Error | unknown;
+  job?: Job;
+}
+
+/** Callback for job status changes */
+export type JobStatusCallback = (jobId: string, status: JobStatusInfo) => void;
+
 export class JobQueue {
   private queue: Job[] = [];
   private processor: Processor<any> | null = null;
   private isProcessing = false;
   private renderCallback: RenderCallback | null = null;
+  /** Track completed jobs by dedupeKey to prevent duplicates across page lifecycle */
+  private completedJobs: Set<string> = new Set();
+  /** Track job status and results */
+  private jobStatuses: Map<string, JobStatusInfo> = new Map();
+  /** Track currently processing job ID */
+  private processingJobId: string | null = null;
+  /** Subscribers to job status changes */
+  private statusSubscribers: Set<JobStatusCallback> = new Set();
 
   constructor() {
     onRequirementsChange(() => {
@@ -70,6 +94,18 @@ export class JobQueue {
    * The processor should handle routing to code-split handlers based on job.type.
    */
   setProcessor(processor: Processor<any>) {
+    if (typeof processor !== 'function') {
+      const isDevelopment =
+        typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+      if (isDevelopment) {
+        console.error(
+          '[nextmq] ❌ JobQueue.setProcessor() requires a function.\n' +
+          'The processor must be an async function that routes jobs to handlers.',
+        );
+      }
+      return;
+    }
+
     this.processor = processor;
     // Process any queued jobs now that processor is ready
     void this.process();
@@ -89,24 +125,107 @@ export class JobQueue {
    * @param type - Job type identifier (e.g., 'cart.add')
    * @param payload - Job payload data
    * @param requirements - Optional requirement keys that must be met before processing
-   * @returns Job ID for tracking
+   * @param dedupeKey - Optional deduplication key. Jobs with the same dedupeKey will be skipped if already processed or queued
+   * @returns Job ID for tracking, or null if job was deduplicated
    */
   enqueue<TPayload>(
     type: JobType,
     payload: TPayload,
     requirements: RequirementKey[] = [],
-  ): string {
+    dedupeKey?: string,
+  ): string | null {
+    // Check for duplicate if dedupeKey is provided
+    if (dedupeKey) {
+      // Check if already completed
+      if (this.completedJobs.has(dedupeKey)) {
+        const isDevelopment =
+          typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+        if (isDevelopment) {
+          console.log(
+            `[nextmq] ⏭️ Job skipped (duplicate): "${type}" with dedupeKey "${dedupeKey}" - already processed`,
+          );
+        }
+        return null;
+      }
+
+      // Check if already in queue
+      const alreadyQueued = this.queue.some((job) => job.dedupeKey === dedupeKey);
+      if (alreadyQueued) {
+        const isDevelopment =
+          typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+        if (isDevelopment) {
+          console.log(
+            `[nextmq] ⏭️ Job skipped (duplicate): "${type}" with dedupeKey "${dedupeKey}" - already queued`,
+          );
+        }
+        return null;
+      }
+    }
+
     const job: Job<TPayload> = {
       id: this.generateJobId(),
       type,
       payload,
       requirements,
+      dedupeKey,
       createdAt: Date.now(),
     };
+
+    // Initialize job status as pending
+    this.updateJobStatus(job.id, {
+      status: 'pending',
+      job,
+    });
 
     this.queue.push(job);
     void this.process();
     return job.id;
+  }
+
+  /**
+   * Update job status and notify subscribers
+   */
+  private updateJobStatus(jobId: string, statusInfo: JobStatusInfo) {
+    this.jobStatuses.set(jobId, statusInfo);
+    // Notify all subscribers
+    this.statusSubscribers.forEach((callback) => {
+      try {
+        callback(jobId, statusInfo);
+      } catch (err) {
+        // Ignore errors from subscribers
+        const isDevelopment =
+          typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+        if (isDevelopment) {
+          console.error('[nextmq] Error in job status subscriber:', err);
+        }
+      }
+    });
+  }
+
+  /**
+   * Subscribe to job status changes
+   * @returns Unsubscribe function
+   */
+  subscribeToJobStatus(callback: JobStatusCallback): () => void {
+    this.statusSubscribers.add(callback);
+    // Immediately notify about existing job statuses
+    this.jobStatuses.forEach((statusInfo, jobId) => {
+      try {
+        callback(jobId, statusInfo);
+      } catch (err) {
+        // Ignore errors
+      }
+    });
+    return () => {
+      this.statusSubscribers.delete(callback);
+    };
+  }
+
+  /**
+   * Get current job status
+   */
+  getJobStatus(jobId: string): JobStatusInfo | null {
+    return this.jobStatuses.get(jobId) || null;
   }
 
   /**
@@ -147,19 +266,67 @@ export class JobQueue {
         const job = this.queue.splice(jobIndex, 1)[0];
         if (!job) break;
 
+        // Update status to processing
+        this.processingJobId = job.id;
+        this.updateJobStatus(job.id, {
+          status: 'processing',
+          job,
+        });
+
         try {
           const result = await this.processor(job);
+          
+          // Mark job as completed for deduplication
+          if (job.dedupeKey) {
+            this.completedJobs.add(job.dedupeKey);
+          }
+          
+          // Update status to completed
+          this.updateJobStatus(job.id, {
+            status: 'completed',
+            result,
+            job,
+          });
           
           // Render JSX if processor returned a React element
           if (result && isValidElement(result) && this.renderCallback) {
             this.renderCallback(result, job.id);
           }
         } catch (err) {
-          console.error('[nextmq] Job processing failed:', {
-            jobId: job.id,
-            jobType: job.type,
+          // Even if job fails, mark as completed for deduplication
+          // (prevents retrying the same dedupeKey immediately)
+          if (job.dedupeKey) {
+            this.completedJobs.add(job.dedupeKey);
+          }
+          
+          // Update status to failed
+          this.updateJobStatus(job.id, {
+            status: 'failed',
             error: err,
+            job,
           });
+          
+          const isDevelopment =
+            typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+
+          if (isDevelopment) {
+            console.error(
+              `[nextmq] ❌ Job processing failed: "${job.type}"\n` +
+              `Job ID: ${job.id}\n` +
+              `Error: ${err instanceof Error ? err.message : String(err)}\n` +
+              (err instanceof Error && err.stack
+                ? `\nStack trace:\n${err.stack}`
+                : ''),
+            );
+          } else {
+            console.error('[nextmq] Job processing failed:', {
+              jobId: job.id,
+              jobType: job.type,
+              error: err,
+            });
+          }
+        } finally {
+          this.processingJobId = null;
         }
 
         // Yield to event loop before processing next job
@@ -183,6 +350,7 @@ export class JobQueue {
       })),
       isProcessing: this.isProcessing,
       processorReady: this.processor !== null,
+      completedJobsCount: this.completedJobs.size,
     };
   }
 }

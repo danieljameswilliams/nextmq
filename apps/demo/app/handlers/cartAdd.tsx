@@ -10,6 +10,7 @@ import type { ReactElement } from 'react';
 function CartAddedNotification({ ean, quantity }: { ean: string; quantity: number }) {
     return (
         <div
+            data-testid="cart-added-notification"
             style={{
                 position: 'fixed',
                 top: '20px',

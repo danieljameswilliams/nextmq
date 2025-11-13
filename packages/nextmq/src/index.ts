@@ -72,6 +72,26 @@
  * );
  * ```
  * 
+ * 5. **Track job status** with React hooks:
+ * ```tsx
+ * import { useJobStatus, useNextmq } from 'nextmq';
+ * 
+ * function MyComponent() {
+ *   const [jobId, setJobId] = useState<string | null>(null);
+ *   const { status, result, error } = useJobStatus(jobId);
+ *   const queue = useNextmq();
+ *   
+ *   const handleClick = () => {
+ *     const id = queue.enqueue('cart.add', { ean: '123' });
+ *     if (id) setJobId(id);
+ *   };
+ *   
+ *   if (status === 'processing') return <Spinner />;
+ *   if (status === 'failed') return <Error error={error} />;
+ *   return <Success data={result} />;
+ * }
+ * ```
+ * 
  * @packageDocumentation
  */
 
@@ -84,6 +104,7 @@ export * from './events';
 export * from './NextMQRootClientEventBridge';
 export * from './NextMQClientProvider';
 export * from './NextMQDevTools';
+export * from './useJobStatus';
 
 // Re-export React types for convenience
 export type { ReactElement } from 'react';

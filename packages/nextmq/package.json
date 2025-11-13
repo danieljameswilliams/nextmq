@@ -15,8 +15,12 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+    "pretest": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "prepublishOnly": "npm run build && npm test"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -29,7 +33,10 @@
     "@types/react": "19.2.4",
     "@types/react-dom": "19.2.3",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "vitest": "^2.1.8",
+    "@testing-library/react": "^16.1.0",
+    "jsdom": "^25.0.1"
   },
   "files": [
     "dist"

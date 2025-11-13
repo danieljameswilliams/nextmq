@@ -37,4 +37,6 @@ export interface NextmqEventDetail {
   payload: unknown;
   /** Optional requirement keys that must be met before processing */
   requirements?: RequirementKey[];
+  /** Optional deduplication key. Jobs with the same dedupeKey will be skipped if already processed or queued */
+  dedupeKey?: string;
 }

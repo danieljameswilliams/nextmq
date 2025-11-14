@@ -3,12 +3,14 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:clean": "turbo run build --force",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "biome format --write .",
     "check-types": "turbo run check-types",
     "test:e2e": "cd apps/demo && npm run test:e2e",
-    "test:e2e:ui": "cd apps/demo && npm run test:e2e:ui"
+    "test:e2e:ui": "cd apps/demo && npm run test:e2e:ui",
+    "prepush": "npm run build"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.5",

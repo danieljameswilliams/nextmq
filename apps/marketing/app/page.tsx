@@ -47,7 +47,7 @@ export default function Home() {
                 Docs
               </Link>
               <Link
-                href="https://github.com"
+                href="https://github.com/danieljameswilliams/nextmq"
                 className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors flex items-center gap-1"
               >
                 <Github className="w-4 h-4" />
@@ -1213,7 +1213,7 @@ export default function Page() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              href="https://github.com"
+              href="https://github.com/danieljameswilliams/nextmq"
               className="inline-flex items-center gap-2 px-8 py-4 bg-blue-500/20 text-white font-semibold rounded-lg hover:bg-blue-500/30 transition-colors border border-blue-400/30"
             >
               <Github className="w-4 h-4" />

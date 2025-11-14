@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "next": "^16.0.2",
-    "nextmq": "*",
+    "nextmq": "0.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

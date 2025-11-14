@@ -5,7 +5,7 @@
  * **Simple Flow:** CustomEvent → EventBridge → Provider → Processor → Handler
  * 
  * This component:
- * 1. Listens for CustomEvents on the window (default: 'nextmq:invoke', configurable via eventName prop)
+ * 1. Listens for CustomEvents on the window (default: 'nextmq', configurable via eventName prop)
  * 2. Buffers events if the processor isn't ready yet
  * 3. Routes events to the JobQueue when the processor is ready
  * 
@@ -73,7 +73,7 @@ export function setProcessEventCallback(
   callback: (event: CustomEvent<NextmqEventDetail>) => void,
 ) {
   processEventCallback = callback;
-  
+
   // Process any buffered events now that processor is ready
   while (eventBuffer.length > 0) {
     const event = eventBuffer.shift();
@@ -125,7 +125,7 @@ export function getEventBufferState() {
  * ⚠️ **IMPORTANT:** This component must be placed in your root layout (app/layout.tsx)
  * alongside NextMQClientProvider, not in nested layouts or pages.
  * 
- * @param eventName - Optional custom event name to listen for. Defaults to 'nextmq:invoke'.
+ * @param eventName - Optional custom event name to listen for. Defaults to 'nextmq'.
  *                    If you use a custom name, make sure to dispatch events with the same name.
  */
 export function NextMQRootClientEventBridge({

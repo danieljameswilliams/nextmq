@@ -34,7 +34,7 @@ export function EventFlowVisualization() {
             &lt;NextMQRootClientEventBridge /&gt;
           </p>
           <p className="text-xs text-blue-700 dark:text-blue-300">
-            ~1KB • Listening for 'nextmq:invoke' CustomEvents
+            ~1KB • Listening for 'nextmq' CustomEvents
           </p>
         </div>
       ),
@@ -343,7 +343,7 @@ export function EventFlowVisualization() {
             </div>
             <div>
               <p className="text-gray-500 mb-1">{'// 2. Events arrive early - buffered automatically'}</p>
-              <p className="text-blue-400">window.dispatchEvent(new CustomEvent('nextmq:invoke', ...))</p>
+              <p className="text-blue-400">window.dispatchEvent(new CustomEvent('nextmq', ...))</p>
               <p className="text-xs text-gray-500 mt-1">{'// (or your custom event name)'}</p>
             </div>
             <div>

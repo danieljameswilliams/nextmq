@@ -43,7 +43,7 @@ test.describe('Add to Cart Flow', () => {
     // Listen for the CustomEvent
     const eventPromise = page.evaluate(() => {
       return new Promise((resolve) => {
-        window.addEventListener('nextmq:invoke', (event: Event) => {
+        window.addEventListener('nextmq', (event: Event) => {
           const customEvent = event as CustomEvent;
           resolve({
             type: customEvent.detail.type,

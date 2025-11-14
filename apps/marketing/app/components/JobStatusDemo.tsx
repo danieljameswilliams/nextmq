@@ -84,12 +84,23 @@ export function JobStatusDemo() {
     if (status === 'failed') {
       return 'bg-red-500 hover:bg-red-600';
     }
-    return 'bg-black hover:bg-gray-800';
+    return 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600';
   };
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-xl">
+      {/* Screenshot-style frame */}
+      <div className="bg-gray-100 dark:bg-gray-900 rounded-t-lg border border-gray-300 dark:border-gray-700 px-4 py-3 flex items-center gap-2">
+        <div className="flex gap-2">
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        </div>
+        <div className="flex-1 bg-white dark:bg-gray-800 rounded px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 text-center font-mono">
+          example.com/product
+        </div>
+      </div>
+      <div className="bg-white dark:bg-gray-950 rounded-b-2xl border-x border-b border-gray-200 dark:border-gray-800 overflow-hidden shadow-xl">
         {/* Product Image Section */}
         <div className="grid md:grid-cols-2 gap-8 p-8">
           {/* Image Gallery */}
@@ -115,7 +126,7 @@ export function JobStatusDemo() {
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="aspect-square bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 rounded-lg border-2 border-gray-200 dark:border-gray-800"
+                  className="aspect-square bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 rounded-lg border-2 border-gray-200 dark:border-gray-800 pointer-events-none opacity-60"
                 />
               ))}
             </div>
@@ -165,7 +176,8 @@ export function JobStatusDemo() {
                   <button
                     key={size}
                     type="button"
-                    className="w-12 h-12 border-2 border-gray-300 dark:border-gray-700 hover:border-black dark:hover:border-white rounded-lg font-semibold text-gray-700 dark:text-gray-300 transition-colors"
+                    disabled
+                    className="w-12 h-12 border-2 border-gray-300 dark:border-gray-700 rounded-lg font-semibold text-gray-700 dark:text-gray-300 opacity-50 cursor-not-allowed pointer-events-none"
                   >
                     {size}
                   </button>
@@ -187,7 +199,8 @@ export function JobStatusDemo() {
                   <button
                     key={c.name}
                     type="button"
-                    className={`w-10 h-10 ${c.color} rounded-full hover:ring-2 hover:ring-offset-2 hover:ring-gray-400 transition-all`}
+                    disabled
+                    className={`w-10 h-10 ${c.color} rounded-full opacity-50 cursor-not-allowed pointer-events-none`}
                     title={c.name}
                   />
                 ))}
@@ -200,7 +213,16 @@ export function JobStatusDemo() {
                 type="button"
                 onClick={handleAddToCart}
                 disabled={status === 'processing'}
-                className={`w-full flex items-center justify-center gap-2 px-6 py-4 text-white font-semibold rounded-lg transition-all ${getButtonStyles()} disabled:opacity-70 disabled:cursor-not-allowed`}
+                className={`w-full flex items-center justify-center gap-2 px-6 py-5 text-white font-bold text-lg rounded-xl transition-all shadow-2xl hover:shadow-3xl hover:scale-[1.02] active:scale-[0.98] ${getButtonStyles()} disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-2xl`}
+                style={{
+                  boxShadow: status === 'processing' 
+                    ? '0 20px 25px -5px rgba(59, 130, 246, 0.3), 0 10px 10px -5px rgba(59, 130, 246, 0.2)'
+                    : status === 'completed'
+                    ? '0 20px 25px -5px rgba(34, 197, 94, 0.3), 0 10px 10px -5px rgba(34, 197, 94, 0.2)'
+                    : status === 'failed'
+                    ? '0 20px 25px -5px rgba(239, 68, 68, 0.3), 0 10px 10px -5px rgba(239, 68, 68, 0.2)'
+                    : '0 20px 25px -5px rgba(37, 99, 235, 0.4), 0 10px 10px -5px rgba(37, 99, 235, 0.3)'
+                }}
               >
                 {getButtonContent()}
               </button>
@@ -209,14 +231,16 @@ export function JobStatusDemo() {
               <div className="flex gap-3">
                 <button
                   type="button"
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                  disabled
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg opacity-50 cursor-not-allowed pointer-events-none"
                 >
                   <Heart className="w-4 h-4" />
                   Wishlist
                 </button>
                 <button
                   type="button"
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                  disabled
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg opacity-50 cursor-not-allowed pointer-events-none"
                 >
                   <Share2 className="w-4 h-4" />
                   Share

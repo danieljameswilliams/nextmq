@@ -116,7 +116,7 @@ export function DynamicLoadingProof() {
             </p>
             <CodeBlock code={`// 1. You click a button, which dispatches:
 window.dispatchEvent(
-  new CustomEvent('nextmq:invoke', {
+  new CustomEvent('nextmq', {
     detail: { type: 'demo.notification', payload: {...} }
   })
 );
@@ -142,11 +142,11 @@ return handler.default(job);`} language="javascript" />
         </p>
 
         <CodeBlock code={`// Example: Third-party analytics script
-// Uses your configured event name (default: 'nextmq:invoke')
+// Uses your configured event name (default: 'nextmq')
 (function() {
   // This script can trigger NextMQ handlers from anywhere
   window.dispatchEvent(
-    new CustomEvent('nextmq:invoke', { // or your custom event name
+    new CustomEvent('nextmq', { // or your custom event name
       detail: {
         type: 'analytics.track',
         payload: {
@@ -162,7 +162,7 @@ return handler.default(job);`} language="javascript" />
 // Partner's script can trigger your portal dialogs
 // Works with any event name you configure
 window.dispatchEvent(
-  new CustomEvent('nextmq:invoke', { // matches your NextMQRootClientEventBridge config
+  new CustomEvent('nextmq', { // matches your NextMQRootClientEventBridge config
     detail: {
       type: 'portal.show',
       payload: {

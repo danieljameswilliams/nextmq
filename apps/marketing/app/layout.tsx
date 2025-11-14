@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { NextMQRootClientEventBridge, NextMQClientProvider, NextMQDevTools } from "nextmq";
+import { NextMQRootClientEventBridge, NextMQClientProvider } from "nextmq";
 import processor from "./processors";
 import "./globals.css";
 
@@ -31,7 +31,6 @@ export default function RootLayout({
         <NextMQRootClientEventBridge />
         <NextMQClientProvider processor={processor}>
           {children}
-          <NextMQDevTools />
         </NextMQClientProvider>
       </body>
     </html>

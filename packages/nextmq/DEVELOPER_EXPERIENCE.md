@@ -13,6 +13,7 @@ NextMQ provides helpful error messages and warnings in development mode to guide
 **When:** `NextMQClientProvider` receives a non-function processor prop
 
 **Error Message:**
+
 ```
 [nextmq] ❌ NextMQClientProvider requires a "processor" function.
 The processor prop must be a function that routes jobs to handlers.
@@ -20,7 +21,7 @@ The processor prop must be a function that routes jobs to handlers.
 Example processor:
   // app/processors.ts
   import type { Processor } from "nextmq";
-  
+
   const processor: Processor = async (job) => {
     switch (job.type) {
       case "cart.add":
@@ -30,7 +31,7 @@ Example processor:
         console.warn("Unknown job type:", job.type);
     }
   };
-  
+
   export default processor;
 ```
 
@@ -39,6 +40,7 @@ Example processor:
 **When:** Processor function doesn't return a Promise
 
 **Error Message:**
+
 ```
 [nextmq] ❌ Processor function must return a Promise.
 Make sure your processor is an async function:
@@ -52,6 +54,7 @@ Make sure your processor is an async function:
 **When:** `useNextmq()` is called outside of `NextMQClientProvider`
 
 **Error Message:**
+
 ```
 [nextmq] ❌ useNextmq() must be used inside <NextMQClientProvider>.
 
@@ -77,11 +80,12 @@ Example:
 **When:** CustomEvent is dispatched without proper `detail` structure
 
 **Error Message:**
+
 ```
 [nextmq] ❌ Invalid CustomEvent: missing "detail" property.
 Events must be dispatched with this structure:
   window.dispatchEvent(
-    new CustomEvent("nextmq:invoke", {
+    new CustomEvent("nextmq", {
       detail: {
         type: "your.job.type",
         payload: { /* your data */ },
@@ -94,6 +98,7 @@ Events must be dispatched with this structure:
 **When:** CustomEvent detail is missing `type`
 
 **Error Message:**
+
 ```
 [nextmq] ❌ Invalid CustomEvent: missing "type" in detail.
 The event detail must include a "type" property:
@@ -107,6 +112,7 @@ The event detail must include a "type" property:
 **When:** `NextMQRootClientEventBridge` is mounted but `NextMQClientProvider` is not found
 
 **Warning:**
+
 ```
 [nextmq] ⚠️ NextMQRootClientEventBridge is mounted but NextMQClientProvider is not found.
 Make sure to include <NextMQClientProvider> in your root layout (app/layout.tsx).
@@ -122,6 +128,7 @@ Example:
 **When:** `NextMQClientProvider` is mounted but `NextMQRootClientEventBridge` is not found
 
 **Warning:**
+
 ```
 [nextmq] ⚠️ NextMQClientProvider is mounted but NextMQRootClientEventBridge is not found.
 Make sure to include <NextMQRootClientEventBridge> in your root layout (app/layout.tsx).
@@ -139,6 +146,7 @@ Without the EventBridge, CustomEvents will not be received.
 **When:** Multiple `NextMQClientProvider` instances are detected
 
 **Warning:**
+
 ```
 [nextmq] ⚠️ Multiple NextMQClientProvider instances detected.
 You should only have one NextMQClientProvider in your root layout.
@@ -149,6 +157,7 @@ You should only have one NextMQClientProvider in your root layout.
 **When:** Event is dispatched before processor is ready
 
 **Warning:**
+
 ```
 [nextmq] ⏳ Event buffered: "your.job.type". Waiting for NextMQClientProvider to initialize processor...
 ```
@@ -160,6 +169,7 @@ This is informational - events are automatically processed once the processor is
 **When:** A job fails during processing
 
 **Error Message (Development):**
+
 ```
 [nextmq] ❌ Job processing failed: "your.job.type"
 Job ID: abc-123-def-456
@@ -171,6 +181,7 @@ Stack trace:
 ```
 
 **Error Message (Production):**
+
 ```
 [nextmq] Job processing failed: {
   jobId: "abc-123-def-456",
@@ -222,19 +233,19 @@ Stack trace:
 ```tsx
 // ✅ Correct
 window.dispatchEvent(
-  new CustomEvent('nextmq:invoke', {
+  new CustomEvent("nextmq", {
     detail: {
-      type: 'cart.add',
-      payload: { ean: '123' },
+      type: "cart.add",
+      payload: { ean: "123" },
     },
-  }),
+  })
 );
 
 // ❌ Wrong
 window.dispatchEvent(
-  new CustomEvent('nextmq:invoke', {
-    type: 'cart.add', // Missing 'detail' wrapper
-  }),
+  new CustomEvent("nextmq", {
+    type: "cart.add", // Missing 'detail' wrapper
+  })
 );
 ```
 
@@ -271,6 +282,7 @@ This ensures your production bundle stays small and your console stays clean.
 ## Best Practices
 
 1. **Always include both components** in your root layout:
+
    ```tsx
    <NextMQRootClientEventBridge />
    <NextMQClientProvider processor={processor}>
@@ -295,4 +307,3 @@ If you encounter an error:
 3. Check the console for warnings
 4. Use `<NextMQDevTools />` to inspect the queue state
 5. Review the [README](../README.md) for setup instructions
-

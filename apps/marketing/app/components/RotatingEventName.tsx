@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 
 const eventNames = [
-  'nextmq:invoke',
-  'myApp:invoke',
+  'nextmq',
+  'myApp',
   'helloMcNerd',
   'app:jobs',
   'shop:actions',

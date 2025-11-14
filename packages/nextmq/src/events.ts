@@ -28,7 +28,7 @@ import type { JobType } from './JobQueue';
 import type { RequirementKey } from './requirements';
 
 /** Event name for NextMQ job dispatching */
-export const NEXTMQ_EVENT_NAME = 'nextmq:invoke';
+export const NEXTMQ_EVENT_NAME = 'nextmq';
 
 /** Event detail structure for NextMQ CustomEvents */
 export interface NextmqEventDetail {

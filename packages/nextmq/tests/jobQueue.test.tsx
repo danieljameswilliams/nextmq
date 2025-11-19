@@ -20,7 +20,7 @@ describe('JobQueue', () => {
 
       queue.setProcessor(handler)
 
-      queue.enqueue('track.relewise', { event: 'TestEvent' }, ['cookieConsent:marketing'])
+      queue.add('track.relewise', { event: 'TestEvent' }, ['cookieConsent:marketing'])
 
       // Give queue time to run (it shouldn't)
       await new Promise((r) => setTimeout(r, 50))
@@ -39,7 +39,7 @@ describe('JobQueue', () => {
 
       queue.setProcessor(handler)
 
-      queue.enqueue('immediate.job', { data: 'test' })
+      queue.add('immediate.job', { data: 'test' })
 
       await new Promise((r) => setTimeout(r, 50))
       expect(handler).toHaveBeenCalledTimes(1)
@@ -58,9 +58,9 @@ describe('JobQueue', () => {
 
       queue.setProcessor(processor)
 
-      queue.enqueue('job.1', {})
-      queue.enqueue('job.2', {})
-      queue.enqueue('job.3', {})
+      queue.add('job.1', {})
+      queue.add('job.2', {})
+      queue.add('job.3', {})
 
       await new Promise((r) => setTimeout(r, 100))
       expect(processingOrder).toEqual(['job.1', 'job.2', 'job.3'])
@@ -71,7 +71,7 @@ describe('JobQueue', () => {
       const ids = new Set<string>()
 
       for (let i = 0; i < 10; i++) {
-        const id = queue.enqueue('test.job', { index: i })
+        const id = queue.add('test.job', { index: i })
         ids.add(id)
       }
 
@@ -88,7 +88,7 @@ describe('JobQueue', () => {
       }
 
       queue.setProcessor(processor)
-      queue.enqueue('timestamp.test', {})
+      queue.add('timestamp.test', {})
 
       await new Promise((r) => setTimeout(r, 50))
       expect(jobCreatedAt).toBeGreaterThanOrEqual(beforeTime)
@@ -111,7 +111,7 @@ describe('JobQueue', () => {
 
       queue.setRenderCallback(renderCallback)
       queue.setProcessor(processor)
-      queue.enqueue('render.test', {})
+      queue.add('render.test', {})
 
       await new Promise((r) => setTimeout(r, 50))
       expect(renderCallback).toHaveBeenCalledTimes(1)
@@ -128,7 +128,7 @@ describe('JobQueue', () => {
 
       queue.setRenderCallback(renderCallback)
       queue.setProcessor(processor)
-      queue.enqueue('void.test', {})
+      queue.add('void.test', {})
 
       await new Promise((r) => setTimeout(r, 50))
       expect(renderCallback).not.toHaveBeenCalled()
@@ -150,8 +150,8 @@ describe('JobQueue', () => {
       }
 
       queue.setProcessor(processor)
-      queue.enqueue('error.job', {})
-      queue.enqueue('success.job', {})
+      queue.add('error.job', {})
+      queue.add('success.job', {})
 
       await new Promise((r) => setTimeout(r, 100))
       expect(errorSpy).toHaveBeenCalled()
@@ -165,7 +165,7 @@ describe('JobQueue', () => {
     it('returns correct debug state', () => {
       const queue = new JobQueue()
 
-      queue.enqueue('test.job', {}, ['test:requirement'])
+      queue.add('test.job', {}, ['test:requirement'])
 
       const debugState = queue.getDebugState()
       expect(debugState.queue).toHaveLength(1)

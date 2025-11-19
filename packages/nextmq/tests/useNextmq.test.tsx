@@ -18,7 +18,7 @@ describe('useNextmq hook', () => {
     const { result } = renderHook(() => useNextmq(), { wrapper })
 
     expect(result.current).toBeDefined()
-    expect(result.current).toHaveProperty('enqueue')
+    expect(result.current).toHaveProperty('add')
     expect(result.current).toHaveProperty('setProcessor')
     expect(result.current).toHaveProperty('setRenderCallback')
     expect(result.current).toHaveProperty('getDebugState')
@@ -35,7 +35,7 @@ describe('useNextmq hook', () => {
     consoleSpy.mockRestore()
   })
 
-  it('should allow enqueueing jobs via hook', async () => {
+  it('should allow adding jobs via hook', async () => {
     const processorSpy = vi.fn()
 
     const processor: Processor = async (job) => {
@@ -46,8 +46,8 @@ describe('useNextmq hook', () => {
 
     const { result } = renderHook(() => useNextmq(), { wrapper })
 
-    // Enqueue a job via hook
-    const jobId = result.current.enqueue('hook.test', { data: 'test' })
+    // Add a job via hook
+    const jobId = result.current.add('hook.test', { data: 'test' })
 
     expect(jobId).toBeDefined()
     expect(typeof jobId).toBe('string')

@@ -84,7 +84,7 @@
  *   const queue = useNextmq();
  *
  *   const handleClick = () => {
- *     const id = queue.enqueue('cart.add', { ean: '123' }, [], undefined, 1000);
+ *     const id = queue.add('cart.add', { ean: '123' }, [], undefined, 1000);
  *     if (id) setJobId(id);
  *   };
  *

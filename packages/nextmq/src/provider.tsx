@@ -63,7 +63,7 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
   useEffect(() => {
     const processEvent = (event: CustomEvent<NextmqEventDetail>) => {
       const { type, payload, requirements, dedupeKey, delay } = event.detail
-      queue.enqueue(type, payload, requirements, dedupeKey, delay)
+      queue.add(type, payload, requirements, dedupeKey, delay)
     }
 
     setProcessEventCallback(processEvent)

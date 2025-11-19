@@ -22,7 +22,7 @@ export interface UseJobStatusReturn {
 /**
  * Hook to track job status in real-time
  *
- * @param jobId - The job ID to track (from enqueue return value)
+ * @param jobId - The job ID to track (from add return value)
  * @returns Object with status, result, and error
  *
  * @example
@@ -33,7 +33,7 @@ export interface UseJobStatusReturn {
  *   const queue = useNextmq();
  *
  *   const handleClick = () => {
- *     const id = queue.enqueue('cart.add', { ean: productId });
+ *     const id = queue.add('cart.add', { ean: productId });
  *     if (id) setJobId(id);
  *   };
  *

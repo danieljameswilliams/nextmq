@@ -85,7 +85,7 @@ This document outlines the comprehensive test coverage for all features in the n
 **Coverage:**
 - ✅ Hook returns JobQueue instance
 - ✅ Hook throws error when used outside Provider
-- ✅ Hook allows enqueueing jobs
+- ✅ Hook allows adding jobs
 
 ### 7. `tests/requirements.test.ts`
 **Coverage:**

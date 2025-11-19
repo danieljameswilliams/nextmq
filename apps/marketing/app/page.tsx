@@ -790,7 +790,7 @@ function AddToCartButton({ productId }) {
   const queue = useNextmq();
   
   const handleClick = () => {
-    const newJobId = queue.enqueue('cart.add', {
+    const newJobId = queue.add('cart.add', {
       ean: productId,
       quantity: 1
     });

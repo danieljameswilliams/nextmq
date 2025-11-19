@@ -101,7 +101,7 @@ export class JobQueue {
   }
 
   /**
-   * Enqueue a new job for processing.
+   * Add a new job for processing.
    *
    * @param type - Job type identifier (e.g., 'cart.add')
    * @param payload - Job payload data
@@ -114,13 +114,13 @@ export class JobQueue {
    *
    * @example
    * // Debouncing: delay + dedupeKey
-   * queue.enqueue('search.perform', { query: 'nextjs' }, [], 'search-query', 300);
+   * queue.add('search.perform', { query: 'nextjs' }, [], 'search-query', 300);
    * // Multiple calls with same dedupeKey:
    * // - If already queued: replaces previous job (resets delay timer)
    * // - If already completed: skipped (deduplication)
    * // Only the last queued job executes after 300ms delay
    */
-  enqueue<TPayload>(type: JobType, payload: TPayload, requirements: RequirementKey[] = [], dedupeKey?: string, delay?: number): string | null {
+  add<TPayload>(type: JobType, payload: TPayload, requirements: RequirementKey[] = [], dedupeKey?: string, delay?: number): string | null {
     if (dedupeKey) {
       if (this.completedJobs.has(dedupeKey)) {
         const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'

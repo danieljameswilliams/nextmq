@@ -46,7 +46,7 @@ The test suite consists of the following test files:
 ### useNextmq Hook Tests (`useNextmq.test.tsx`)
 - ✅ Returns JobQueue instance
 - ✅ Error when used outside Provider
-- ✅ Job enqueueing via hook
+- ✅ Job adding via hook
 
 ## Running Tests
 

@@ -16,7 +16,7 @@ export function JobStatusDemo() {
       // Small delay to show the reset
       setTimeout(() => {
         const productId = `PROD-${Date.now()}`
-        const newJobId = queue.enqueue('cart.add', {
+        const newJobId = queue.add('cart.add', {
           ean: productId,
           quantity: 1,
         })
@@ -30,8 +30,8 @@ export function JobStatusDemo() {
     // Generate a unique product ID for this demo
     const productId = `PROD-${Date.now()}`
 
-    // Enqueue the job directly to get the job ID
-    const newJobId = queue.enqueue('cart.add', {
+    // Add the job directly to get the job ID
+    const newJobId = queue.add('cart.add', {
       ean: productId,
       quantity: 1,
     })
@@ -273,8 +273,8 @@ function AddToCartButton({ productId }) {
   const queue = useNextmq();
   
   const handleClick = () => {
-    // Enqueue job and get job ID
-    const newJobId = queue.enqueue('cart.add', {
+    // Add job and get job ID
+    const newJobId = queue.add('cart.add', {
       ean: productId,
       quantity: 1
     });

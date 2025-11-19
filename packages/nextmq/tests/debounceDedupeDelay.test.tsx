@@ -23,7 +23,7 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      const jobId = queue.enqueue('delayed.job', { data: 'test' }, [], undefined, 1000)
+      const jobId = queue.add('delayed.job', { data: 'test' }, [], undefined, 1000)
 
       expect(jobId).toBeDefined()
       expect(processorSpy).not.toHaveBeenCalled()
@@ -51,10 +51,10 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processor)
 
-      // Enqueue jobs with different delays
-      queue.enqueue('job.1', {}, [], undefined, 50) // 50ms delay
-      queue.enqueue('job.2', {}, [], undefined, 10) // 10ms delay (should process first)
-      queue.enqueue('job.3', {}, [], undefined, 30) // 30ms delay
+      // Add jobs with different delays
+      queue.add('job.1', {}, [], undefined, 50) // 50ms delay
+      queue.add('job.2', {}, [], undefined, 10) // 10ms delay (should process first)
+      queue.add('job.3', {}, [], undefined, 30) // 30ms delay
 
       // Wait for all jobs to process (give enough time for longest delay + processing)
       await new Promise((resolve) => setTimeout(resolve, 150))
@@ -77,8 +77,8 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      // Enqueue job with delay and requirement
-      queue.enqueue('delayed.requirement', {}, ['test:requirement'], undefined, 500)
+      // Add job with delay and requirement
+      queue.add('delayed.requirement', {}, ['test:requirement'], undefined, 500)
 
       // Advance time - job should not process (requirement not met)
       vi.advanceTimersByTime(500)
@@ -100,7 +100,7 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      queue.enqueue('immediate.job', {})
+      queue.add('immediate.job', {})
 
       await Promise.resolve()
       expect(processorSpy).toHaveBeenCalledTimes(1)
@@ -115,14 +115,14 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
       queue.setProcessor(processorSpy)
 
       // Process first job
-      const jobId1 = queue.enqueue('test.job', { id: 1 }, [], 'unique-key')
+      const jobId1 = queue.add('test.job', { id: 1 }, [], 'unique-key')
       expect(jobId1).toBeDefined()
 
       await Promise.resolve()
       expect(processorSpy).toHaveBeenCalledTimes(1)
 
-      // Try to enqueue another job with same dedupeKey
-      const jobId2 = queue.enqueue('test.job', { id: 2 }, [], 'unique-key')
+      // Try to add another job with same dedupeKey
+      const jobId2 = queue.add('test.job', { id: 2 }, [], 'unique-key')
       expect(jobId2).toBeNull() // Should return null (skipped)
 
       await Promise.resolve()
@@ -134,12 +134,12 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
       const processorSpy = vi.fn<Parameters<Processor>, ReturnType<Processor>>()
 
       // Don't set processor yet to prevent processing
-      // Enqueue first job (will be replaced)
-      const jobId1 = queue.enqueue('test.job', { id: 1 }, [], 'debounce-key')
+      // Add first job (will be replaced)
+      const jobId1 = queue.add('test.job', { id: 1 }, [], 'debounce-key')
       expect(jobId1).toBeDefined()
 
-      // Immediately enqueue second job with same dedupeKey (should replace first)
-      const jobId2 = queue.enqueue('test.job', { id: 2 }, [], 'debounce-key')
+      // Immediately add second job with same dedupeKey (should replace first)
+      const jobId2 = queue.add('test.job', { id: 2 }, [], 'debounce-key')
       expect(jobId2).toBeDefined()
       expect(jobId2).not.toBe(jobId1) // Different job ID
 
@@ -164,9 +164,9 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      queue.enqueue('test.job', { id: 1 }, [], 'key-1')
-      queue.enqueue('test.job', { id: 2 }, [], 'key-2')
-      queue.enqueue('test.job', { id: 3 }, [], 'key-3')
+      queue.add('test.job', { id: 1 }, [], 'key-1')
+      queue.add('test.job', { id: 2 }, [], 'key-2')
+      queue.add('test.job', { id: 3 }, [], 'key-3')
 
       await vi.runAllTimersAsync()
       expect(processorSpy).toHaveBeenCalledTimes(3)
@@ -178,9 +178,9 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      queue.enqueue('test.job', { id: 1 })
-      queue.enqueue('test.job', { id: 2 })
-      queue.enqueue('test.job', { id: 3 })
+      queue.add('test.job', { id: 1 })
+      queue.add('test.job', { id: 2 })
+      queue.add('test.job', { id: 3 })
 
       await vi.runAllTimersAsync()
       expect(processorSpy).toHaveBeenCalledTimes(3)
@@ -197,14 +197,14 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
       queue.setProcessor(processor)
 
       // Process first job (will fail)
-      const jobId1 = queue.enqueue('error.job', {}, [], 'error-key')
+      const jobId1 = queue.add('error.job', {}, [], 'error-key')
       expect(jobId1).toBeDefined()
 
       await Promise.resolve()
       expect(errorSpy).toHaveBeenCalled()
 
-      // Try to enqueue another job with same dedupeKey
-      const jobId2 = queue.enqueue('error.job', {}, [], 'error-key')
+      // Try to add another job with same dedupeKey
+      const jobId2 = queue.add('error.job', {}, [], 'error-key')
       expect(jobId2).toBeNull() // Should return null (skipped due to deduplication)
 
       errorSpy.mockRestore()
@@ -218,16 +218,16 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      // Enqueue first job with delay and dedupeKey
-      queue.enqueue('debounce.job', { query: 'a' }, [], 'search-query', 500)
+      // Add first job with delay and dedupeKey
+      queue.add('debounce.job', { query: 'a' }, [], 'search-query', 500)
 
       // Advance time by 300ms
       vi.advanceTimersByTime(300)
       await Promise.resolve()
       expect(processorSpy).not.toHaveBeenCalled()
 
-      // Enqueue second job with same dedupeKey (should replace first and reset timer)
-      queue.enqueue('debounce.job', { query: 'ab' }, [], 'search-query', 500)
+      // Add second job with same dedupeKey (should replace first and reset timer)
+      queue.add('debounce.job', { query: 'ab' }, [], 'search-query', 500)
 
       // Advance time by 300ms (total 600ms from first, but timer was reset)
       vi.advanceTimersByTime(300)
@@ -251,20 +251,20 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      // Rapidly enqueue multiple jobs with same dedupeKey
-      queue.enqueue('search.job', { query: 'a' }, [], 'search', 300)
+      // Rapidly add multiple jobs with same dedupeKey
+      queue.add('search.job', { query: 'a' }, [], 'search', 300)
       vi.advanceTimersByTime(50)
       await Promise.resolve()
 
-      queue.enqueue('search.job', { query: 'ab' }, [], 'search', 300)
+      queue.add('search.job', { query: 'ab' }, [], 'search', 300)
       vi.advanceTimersByTime(50)
       await Promise.resolve()
 
-      queue.enqueue('search.job', { query: 'abc' }, [], 'search', 300)
+      queue.add('search.job', { query: 'abc' }, [], 'search', 300)
       vi.advanceTimersByTime(50)
       await Promise.resolve()
 
-      queue.enqueue('search.job', { query: 'abcd' }, [], 'search', 300)
+      queue.add('search.job', { query: 'abcd' }, [], 'search', 300)
 
       // Advance remaining delay time
       vi.advanceTimersByTime(300)
@@ -285,8 +285,8 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      queue.enqueue('search.job', { query: 'a' }, [], 'search-1', 200)
-      queue.enqueue('search.job', { query: 'b' }, [], 'search-2', 200)
+      queue.add('search.job', { query: 'a' }, [], 'search-1', 200)
+      queue.add('search.job', { query: 'b' }, [], 'search-2', 200)
 
       vi.advanceTimersByTime(200)
       await vi.runAllTimersAsync()
@@ -302,10 +302,10 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
       queue.setProcessor(processorSpy)
 
       // First job with longer delay
-      queue.enqueue('search.job', { query: 'a' }, [], 'search', 500)
+      queue.add('search.job', { query: 'a' }, [], 'search', 500)
 
       // Second job with shorter delay (should replace first)
-      queue.enqueue('search.job', { query: 'b' }, [], 'search', 200)
+      queue.add('search.job', { query: 'b' }, [], 'search', 200)
 
       vi.advanceTimersByTime(200)
       await vi.runAllTimersAsync()
@@ -326,14 +326,14 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      // Enqueue job with delay, dedupeKey, and requirement
-      queue.enqueue('debounce.req', { id: 1 }, ['test:requirement'], 'debounce-key', 300)
+      // Add job with delay, dedupeKey, and requirement
+      queue.add('debounce.req', { id: 1 }, ['test:requirement'], 'debounce-key', 300)
 
       vi.advanceTimersByTime(100)
       await Promise.resolve()
 
       // Replace with new job
-      queue.enqueue('debounce.req', { id: 2 }, ['test:requirement'], 'debounce-key', 300)
+      queue.add('debounce.req', { id: 2 }, ['test:requirement'], 'debounce-key', 300)
 
       vi.advanceTimersByTime(200)
       await Promise.resolve()
@@ -359,7 +359,7 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      queue.enqueue('zero.delay', {}, [], undefined, 0)
+      queue.add('zero.delay', {}, [], undefined, 0)
 
       await Promise.resolve()
       expect(processorSpy).toHaveBeenCalledTimes(1)
@@ -371,7 +371,7 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      queue.enqueue('long.delay', {}, [], undefined, 10000)
+      queue.add('long.delay', {}, [], undefined, 10000)
 
       vi.advanceTimersByTime(5000)
       await Promise.resolve()
@@ -388,8 +388,8 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processorSpy)
 
-      queue.enqueue('test.job', {}, [], '')
-      queue.enqueue('test.job', {}, [], '')
+      queue.add('test.job', {}, [], '')
+      queue.add('test.job', {}, [], '')
 
       await Promise.resolve()
       // Empty string dedupeKey should still work
@@ -408,10 +408,10 @@ describe('Debounce, DedupeKey, and Delay Features', () => {
 
       queue.setProcessor(processor)
 
-      // Enqueue jobs with delays that complete in non-chronological order
-      queue.enqueue('job.1', {}, [], undefined, 50)
-      queue.enqueue('job.2', {}, [], undefined, 10)
-      queue.enqueue('job.3', {}, [], undefined, 30)
+      // Add jobs with delays that complete in non-chronological order
+      queue.add('job.1', {}, [], undefined, 50)
+      queue.add('job.2', {}, [], undefined, 10)
+      queue.add('job.3', {}, [], undefined, 30)
 
       // Wait for all jobs to process (give enough time for longest delay + processing)
       await new Promise((resolve) => setTimeout(resolve, 150))

@@ -15,7 +15,7 @@ describe('NextMQRootClientEventBridge', () => {
     // This is handled by the component cleanup, but good to be explicit
   })
 
-  it('enqueues jobs triggered via CustomEvent', async () => {
+  it('adds jobs triggered via CustomEvent', async () => {
     const spy = vi.fn()
 
     const processor: Processor = async (job: Job) => {

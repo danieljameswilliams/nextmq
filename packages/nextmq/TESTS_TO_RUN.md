@@ -42,7 +42,7 @@ This runs all test suites:
 5. **useNextmq Hook Tests** (`tests/useNextmq.test.tsx`)
    - Returns JobQueue instance
    - Error when used outside Provider
-   - Job enqueueing
+   - Job adding
 
 ## Quick Commands
 

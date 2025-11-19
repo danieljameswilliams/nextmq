@@ -103,7 +103,7 @@ export function EventFlowVisualization() {
       details: (
         <div className="mt-3 space-y-2">
           <div className="flex items-center gap-2">
-            <div className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/50 rounded text-xs">⏳ Waiting: necessaryConsent</div>
+            <div className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/50 rounded text-xs">⏳ Waiting: cookieConsent</div>
             <ArrowRight className="w-3 h-3 text-gray-400" />
             <div className="px-2 py-1 bg-green-100 dark:bg-green-900/50 rounded text-xs">✓ Ready: cart.add</div>
           </div>

@@ -5,7 +5,7 @@
  * Jobs with requirements wait in the queue until all specified requirements are `true`.
  */
 
-/** Requirement key identifier (e.g., 'necessaryConsent', 'userAuthenticated') */
+/** Requirement key identifier (e.g., 'cookieConsent', 'userAuthenticated') */
 export type RequirementKey = string
 
 /** Internal requirement state storage */

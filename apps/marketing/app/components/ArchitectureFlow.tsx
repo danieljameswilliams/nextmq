@@ -130,13 +130,12 @@ export function ArchitectureFlow() {
               <div key={step.id} className="relative flex items-start gap-6">
                 {/* Icon */}
                 <div
-                  className={`relative z-10 flex items-center justify-center w-16 h-16 rounded-full border-2 transition-all ${
-                    status === 'completed'
+                  className={`relative z-10 flex items-center justify-center w-16 h-16 rounded-full border-2 transition-all ${status === 'completed'
                       ? 'bg-green-100 dark:bg-green-950/30 border-green-500 dark:border-green-600 text-green-600 dark:text-green-400'
                       : status === 'active'
                         ? 'bg-blue-100 dark:bg-blue-950/30 border-blue-500 dark:border-blue-600 text-blue-600 dark:text-blue-400 animate-pulse'
                         : 'bg-gray-100 dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-400 dark:text-gray-600'
-                  }`}
+                    }`}
                 >
                   {step.icon}
                 </div>
@@ -194,7 +193,7 @@ export function ArchitectureFlow() {
                   {step.id === '6' && status !== 'pending' && (
                     <div className="mt-3 space-y-2">
                       <div className="flex items-center gap-2">
-                        <div className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/50 rounded text-xs">⏳ Waiting: necessaryConsent</div>
+                        <div className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/50 rounded text-xs">⏳ Waiting: cookieConsent</div>
                         <ArrowRight className="w-3 h-3 text-gray-400" />
                         <div className="px-2 py-1 bg-green-100 dark:bg-green-900/50 rounded text-xs">✓ Ready: cart.add</div>
                       </div>

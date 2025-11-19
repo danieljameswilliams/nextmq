@@ -369,13 +369,13 @@ window.dispatchEvent(
     detail: {
       type: 'analytics.track',
       payload: { event: 'page_view' },
-      requirements: ['necessaryConsent'] // ⏳ Job waits here
+      requirements: ['cookieConsent'] // ⏳ Job waits here
     }
   })
 );
 
 // Later, when user gives consent
-setRequirement('necessaryConsent', true);
+setRequirement('cookieConsent', true);
 // ✅ Job automatically processes!`}
                   />
                 </div>
@@ -746,7 +746,7 @@ window.dispatchEvent(
     detail: {
       type: 'cart.add',
       payload: { ean: '123', quantity: 1 },
-      requirements: ['necessaryConsent'], // Optional
+      requirements: ['cookieConsent'], // Optional
       dedupeKey: 'cart-add-123', // Optional: prevent duplicates
       delay: 500 // Optional: delay in milliseconds
     }

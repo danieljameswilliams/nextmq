@@ -65,7 +65,7 @@
  *     detail: {
  *       type: 'cart.add',
  *       payload: { ean: '123' },
- *       requirements: ['necessaryConsent'], // Optional
+ *       requirements: ['cookieConsent'], // Optional
  *       dedupeKey: 'cart-add-123', // Optional: prevent duplicates
  *       delay: 1000 // Optional: delay in milliseconds
  *       // 💡 Tip: delay + dedupeKey = automatic debouncing!

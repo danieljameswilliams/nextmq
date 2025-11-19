@@ -4,7 +4,7 @@ import { NEXTMQ_EVENT_NAME, NextMQDevTools } from 'nextmq'
 
 // Example requirement key - in real app this would come from requirements.ts
 const _REQ = {
-  necessaryConsent: 'necessaryConsent',
+  cookieConsent: 'cookieConsent',
 } as const
 
 export default function Home() {

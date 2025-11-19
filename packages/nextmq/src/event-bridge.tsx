@@ -14,6 +14,8 @@ import { NEXTMQ_EVENT_NAME, type NextmqEventDetail } from './events'
 
 /** Event buffer to store events until the processor is ready */
 const eventBuffer: CustomEvent<NextmqEventDetail>[] = []
+/** Maximum buffer size to prevent memory issues */
+const MAX_BUFFER_SIZE = 1000
 
 /** Callback to process events (set by NextMQClientProvider) */
 let processEventCallback: ((event: CustomEvent<NextmqEventDetail>) => void) | null = null
@@ -139,6 +141,16 @@ export function NextMQRootClientEventBridge({ eventName = NEXTMQ_EVENT_NAME }: {
       if (processEventCallback) {
         processEventCallback(customEvent)
       } else {
+        // Prevent buffer overflow
+        if (eventBuffer.length >= MAX_BUFFER_SIZE) {
+          if (isDevelopment) {
+            console.warn(`[nextmq] ⚠️ Event buffer is full (${MAX_BUFFER_SIZE} events). Dropping oldest event. Consider initializing NextMQClientProvider earlier.`)
+          } else {
+            console.error('[nextmq] Event buffer is full. Dropping event.')
+          }
+          eventBuffer.shift() // Remove oldest event
+        }
+        
         if (isDevelopment) {
           console.warn(`[nextmq] ⏳ Event buffered: "${customEvent.detail.type}". Waiting for NextMQClientProvider to initialize processor...`)
         }

@@ -9,7 +9,7 @@
 
 'use client'
 
-import React, { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import React, { createContext, type ReactNode, useCallback, useContext, useEffect, useState, useRef } from 'react'
 import { clearProcessEventCallback, isEventBridgeMounted, markProviderMounted, markProviderUnmounted, setProcessEventCallback } from './event-bridge'
 import type { NextmqEventDetail } from './events'
 import { JobQueue, type Processor, type RenderCallback } from './job-queue'
@@ -22,6 +22,7 @@ interface RenderedComponent {
   id: string
   element: React.ReactElement
   jobId: string
+  createdAt: number
 }
 
 /**
@@ -33,20 +34,41 @@ interface RenderedComponent {
 export function NextMQClientProvider({ children, processor }: { children: ReactNode; processor: Processor<unknown> }) {
   const [queue] = useState(() => new JobQueue())
   const [renderedComponents, setRenderedComponents] = useState<Map<string, RenderedComponent>>(new Map())
+  /** Maximum number of rendered components to track (prevents memory leak) */
+  const MAX_RENDERED_COMPONENTS = 100
 
   const handleRender = useCallback<RenderCallback>((element, jobId) => {
     setRenderedComponents((prev) => {
       const next = new Map(prev)
 
       if (!element) {
+        // Remove components for this jobId
         for (const [id, comp] of next.entries()) {
           if (comp.jobId === jobId) {
             next.delete(id)
           }
         }
       } else {
+        // Prevent memory leak: limit rendered components
+        if (next.size >= MAX_RENDERED_COMPONENTS) {
+          // Remove oldest entries (FIFO)
+          const sortedEntries = Array.from(next.entries()).sort((a, b) => a[1].createdAt - b[1].createdAt)
+          const toRemove = sortedEntries.slice(0, Math.floor(MAX_RENDERED_COMPONENTS * 0.2)) // Remove 20% oldest
+          for (const [id] of toRemove) {
+            next.delete(id)
+          }
+        }
+
         const id = `nextmq-render-${jobId}-${Date.now()}`
-        next.set(id, { id, element, jobId })
+        next.set(id, { id, element, jobId, createdAt: Date.now() })
+      }
+
+      // Clean up components older than 10 minutes
+      const tenMinutesAgo = Date.now() - 10 * 60 * 1000
+      for (const [id, comp] of next.entries()) {
+        if (comp.createdAt < tenMinutesAgo) {
+          next.delete(id)
+        }
       }
 
       return next
@@ -72,29 +94,41 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
     }
   }, [queue])
 
+  // Track processor reference to avoid unnecessary updates when prop reference hasn't changed
+  const processorRef = useRef<Processor<unknown> | null>(null)
+
   useEffect(() => {
+    // Validate processor type first
     if (typeof processor !== 'function') {
       console.error(
         '[nextmq] ❌ NextMQClientProvider requires a "processor" function.\n' +
-          'The processor prop must be a function that routes jobs to handlers.\n\n' +
-          'Example processor:\n' +
-          '  // app/processors.ts\n' +
-          '  import type { Processor } from "nextmq";\n' +
-          '  \n' +
-          '  const processor: Processor = async (job) => {\n' +
-          '    switch (job.type) {\n' +
-          '      case "cart.add":\n' +
-          '        const handler = await import("./handlers/cartAdd");\n' +
-          '        return handler.default(job);\n' +
-          '      default:\n' +
-          '        console.warn("Unknown job type:", job.type);\n' +
-          '    }\n' +
-          '  };\n' +
-          '  \n' +
-          '  export default processor;'
+        'The processor prop must be a function that routes jobs to handlers.\n\n' +
+        'Example processor:\n' +
+        '  // app/processors.ts\n' +
+        '  import type { Processor } from "nextmq";\n' +
+        '  \n' +
+        '  const processor: Processor = async (job) => {\n' +
+        '    switch (job.type) {\n' +
+        '      case "cart.add":\n' +
+        '        const handler = await import("./handlers/cartAdd");\n' +
+        '        return handler.default(job);\n' +
+        '      default:\n' +
+        '        console.warn("Unknown job type:", job.type);\n' +
+        '    }\n' +
+        '  };\n' +
+        '  \n' +
+        '  export default processor;'
       )
       return
     }
+
+    // Only update if processor reference actually changed
+    // This prevents unnecessary re-runs when processor is recreated on every render
+    if (processorRef.current === processor) {
+      return // Skip if same reference - prevents unnecessary re-runs
+    }
+
+    processorRef.current = processor
 
     // Validate processor returns a Promise (only in development, skip in test mode)
     const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
@@ -123,7 +157,7 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
     }
 
     queue.setProcessor(processor)
-  }, [queue, processor])
+  }, [queue, processor]) // Only runs when queue or processor reference changes
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -137,13 +171,13 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
         if (!isEventBridgeMounted()) {
           console.warn(
             '[nextmq] ⚠️ NextMQClientProvider is mounted but NextMQRootClientEventBridge is not found.\n' +
-              'Make sure to include <NextMQRootClientEventBridge> in your root layout (app/layout.tsx).\n' +
-              'Example:\n' +
-              '  <NextMQRootClientEventBridge />\n' +
-              '  <NextMQClientProvider processor={processor}>\n' +
-              '    {children}\n' +
-              '  </NextMQClientProvider>\n\n' +
-              'Without the EventBridge, CustomEvents will not be received.'
+            'Make sure to include <NextMQRootClientEventBridge> in your root layout (app/layout.tsx).\n' +
+            'Example:\n' +
+            '  <NextMQRootClientEventBridge />\n' +
+            '  <NextMQClientProvider processor={processor}>\n' +
+            '    {children}\n' +
+            '  </NextMQClientProvider>\n\n' +
+            'Without the EventBridge, CustomEvents will not be received.'
           )
         }
       }, 100)
@@ -199,19 +233,19 @@ export function useNextmq(): JobQueue {
   if (!ctx) {
     throw new Error(
       '[nextmq] ❌ useNextmq() must be used inside <NextMQClientProvider>.\n\n' +
-        'Make sure to:\n' +
-        '1. Wrap your app with <NextMQClientProvider> in your root layout (app/layout.tsx)\n' +
-        '2. Use useNextmq() only in components that are children of the Provider\n\n' +
-        'Example:\n' +
-        '  // app/layout.tsx\n' +
-        '  <NextMQClientProvider processor={processor}>\n' +
-        '    {children}\n' +
-        '  </NextMQClientProvider>\n\n' +
-        '  // app/page.tsx\n' +
-        '  function Page() {\n' +
-        '    const queue = useNextmq(); // ✅ Works here\n' +
-        '    return <div>...</div>;\n' +
-        '  }'
+      'Make sure to:\n' +
+      '1. Wrap your app with <NextMQClientProvider> in your root layout (app/layout.tsx)\n' +
+      '2. Use useNextmq() only in components that are children of the Provider\n\n' +
+      'Example:\n' +
+      '  // app/layout.tsx\n' +
+      '  <NextMQClientProvider processor={processor}>\n' +
+      '    {children}\n' +
+      '  </NextMQClientProvider>\n\n' +
+      '  // app/page.tsx\n' +
+      '  function Page() {\n' +
+      '    const queue = useNextmq(); // ✅ Works here\n' +
+      '    return <div>...</div>;\n' +
+      '  }'
     )
   }
   return ctx

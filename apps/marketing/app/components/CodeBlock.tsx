@@ -1,22 +1,22 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useEffect, useState } from 'react'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 export function CodeBlock({ code, language = 'typescript' }: { code: string; language?: string }) {
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   if (!mounted) {
     return (
       <pre className="p-6 m-0 text-sm text-gray-100 font-mono overflow-x-auto">
         <code>{code}</code>
       </pre>
-    );
+    )
   }
 
   return (
@@ -37,6 +37,5 @@ export function CodeBlock({ code, language = 'typescript' }: { code: string; lan
     >
       {code}
     </SyntaxHighlighter>
-  );
+  )
 }
-

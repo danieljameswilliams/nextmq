@@ -1,10 +1,10 @@
-import Link from "next/link";
-import { Code2, Zap, Package, CheckCircle2, ArrowRight, Github, Bug, BookOpen, Rocket, Wrench, BarChart3 } from "lucide-react";
-import { CodeBlock } from "./components/CodeBlock";
-import { DynamicLoadingProof } from "./components/DynamicLoadingProof";
-import { EventFlowVisualization } from "./components/EventFlowVisualization";
-import { JobStatusDemo } from "./components/JobStatusDemo";
-import { DevToolsActivator } from "./components/DevToolsActivator";
+import { ArrowRight, BarChart3, BookOpen, Bug, CheckCircle2, Code2, Github, Package, Wrench, Zap } from 'lucide-react'
+import Link from 'next/link'
+import { CodeBlock } from './components/CodeBlock'
+import { DevToolsActivator } from './components/DevToolsActivator'
+import { DynamicLoadingProof } from './components/DynamicLoadingProof'
+import { EventFlowVisualization } from './components/EventFlowVisualization'
+import { JobStatusDemo } from './components/JobStatusDemo'
 
 export default function Home() {
   return (
@@ -17,39 +17,22 @@ export default function Home() {
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <Code2 className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
-                NextMQ
-              </span>
+              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">NextMQ</span>
             </div>
             <div className="flex items-center gap-6">
-              <Link
-                href="#how-it-works"
-                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-              >
+              <Link href="#how-it-works" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
                 How it works
               </Link>
-              <Link
-                href="#features"
-                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-              >
+              <Link href="#features" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
                 Features
               </Link>
-              <Link
-                href="#simply-dispatchevent"
-                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-              >
+              <Link href="#simply-dispatchevent" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
                 dispatchEvent
               </Link>
-              <Link
-                href="#docs"
-                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
-              >
+              <Link href="#docs" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
                 Docs
               </Link>
-              <Link
-                href="https://github.com/danieljameswilliams/nextmq"
-                className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors flex items-center gap-1"
-              >
+              <Link href="https://github.com/danieljameswilliams/nextmq" className="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors flex items-center gap-1">
                 <Github className="w-4 h-4" />
                 GitHub
               </Link>
@@ -62,25 +45,15 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         <div className="text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 mb-8">
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-400">
-              Built for Next.js 16+
-            </span>
+            <span className="text-sm font-medium text-blue-700 dark:text-blue-400">Built for Next.js 16+</span>
           </div>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-            <span className="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-300 dark:to-white bg-clip-text text-transparent">
-              Message Queue
-            </span>
+            <span className="bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-300 dark:to-white bg-clip-text text-transparent">Message Queue</span>
             <br />
-            <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
-              for Next.js
-            </span>
+            <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">for Next.js</span>
           </h1>
           <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-            A tiny queue + actions runtime for Next.js.{" "}
-            <span className="font-semibold text-gray-900 dark:text-gray-100">
-              Simply dispatchEvent
-            </span>
-            {" "}with CustomEvent. Small initial load (~1KB), requirements system, job deduplication, and status hooks.
+            A tiny queue + actions runtime for Next.js. <span className="font-semibold text-gray-900 dark:text-gray-100">Simply dispatchEvent</span> with CustomEvent. Small initial load (~1KB), requirements system, job deduplication, and status hooks.
           </p>
           <div className="inline-flex items-center gap-4 px-6 py-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-lg border-2 border-green-200 dark:border-green-900 mb-8 shadow-lg">
             <div className="text-center">
@@ -98,21 +71,17 @@ export default function Home() {
             <div className="text-center">
               <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">0 KB</div>
               <div className="text-xs font-semibold text-gray-700 dark:text-gray-300">handlers initial</div>
-              <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">Load <span className="font-semibold">on-demand</span></div>
+              <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                Load <span className="font-semibold">on-demand</span>
+              </div>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="#install"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
-            >
+            <Link href="#install" className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40">
               Get Started
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link
-              href="#docs"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            >
+            <Link href="#docs" className="inline-flex items-center gap-2 px-8 py-4 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
               View Docs
             </Link>
           </div>
@@ -158,52 +127,16 @@ export default function Home() {
       <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Why NextMQ?</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Built specifically for Next.js with simplicity and developer experience in mind
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Built specifically for Next.js with simplicity and developer experience in mind</p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <FeatureCard
-            icon={<Zap className="w-6 h-6" />}
-            title="Simply dispatchEvent"
-            description="Just use window.dispatchEvent() with CustomEvent. No complex APIs, no abstractions. The web platform you already know."
-            highlight={true}
-          />
-          <FeatureCard
-            icon={<Package className="w-6 h-6" />}
-            title="Small Initial Load"
-            description="Only ~1KB initial load. Event Bridge loads first, processor and handlers load dynamically on-demand."
-            highlight={true}
-          />
-          <FeatureCard
-            icon={<CheckCircle2 className="w-6 h-6" />}
-            title="Requirements System"
-            description="Gate jobs until requirements are met. Perfect for user consent, authentication, or feature flags."
-            highlight={true}
-          />
-          <FeatureCard
-            icon={<CheckCircle2 className="w-6 h-6" />}
-            title="Job Deduplication"
-            description="Prevent duplicate jobs with dedupeKey. Perfect for analytics, tracking, and one-time actions."
-            highlight={true}
-          />
-          <FeatureCard
-            icon={<BarChart3 className="w-6 h-6" />}
-            title="Status Hooks"
-            description="Track job status in real-time with useJobStatus hook. Perfect for updating UI based on job state."
-            highlight={true}
-          />
-          <FeatureCard
-            icon={<CheckCircle2 className="w-6 h-6" />}
-            title="Debouncing Built-In"
-            description="Delay + Deduplication = automatic debouncing! Replace previous jobs and wait for inactivity. Perfect for search inputs and analytics."
-            highlight={true}
-          />
-          <FeatureCard
-            icon={<Code2 className="w-6 h-6" />}
-            title="Code Splitting"
-            description="Handlers are automatically code-split. Only load what you need, when you need it."
-          />
+          <FeatureCard icon={<Zap className="w-6 h-6" />} title="Simply dispatchEvent" description="Just use window.dispatchEvent() with CustomEvent. No complex APIs, no abstractions. The web platform you already know." highlight={true} />
+          <FeatureCard icon={<Package className="w-6 h-6" />} title="Small Initial Load" description="Only ~1KB initial load. Event Bridge loads first, processor and handlers load dynamically on-demand." highlight={true} />
+          <FeatureCard icon={<CheckCircle2 className="w-6 h-6" />} title="Requirements System" description="Gate jobs until requirements are met. Perfect for user consent, authentication, or feature flags." highlight={true} />
+          <FeatureCard icon={<CheckCircle2 className="w-6 h-6" />} title="Job Deduplication" description="Prevent duplicate jobs with dedupeKey. Perfect for analytics, tracking, and one-time actions." highlight={true} />
+          <FeatureCard icon={<BarChart3 className="w-6 h-6" />} title="Status Hooks" description="Track job status in real-time with useJobStatus hook. Perfect for updating UI based on job state." highlight={true} />
+          <FeatureCard icon={<CheckCircle2 className="w-6 h-6" />} title="Debouncing Built-In" description="Delay + Deduplication = automatic debouncing! Replace previous jobs and wait for inactivity. Perfect for search inputs and analytics." highlight={true} />
+          <FeatureCard icon={<Code2 className="w-6 h-6" />} title="Code Splitting" description="Handlers are automatically code-split. Only load what you need, when you need it." />
         </div>
       </section>
 
@@ -211,9 +144,7 @@ export default function Home() {
       <section id="simply-dispatchevent" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/30 dark:via-purple-950/30 dark:to-pink-950/30 rounded-3xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Simply dispatchEvent</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-6">
-            No complex APIs. No abstractions. Just the standard web platform you already know.
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-6">No complex APIs. No abstractions. Just the standard web platform you already know.</p>
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
@@ -224,12 +155,12 @@ export default function Home() {
                   Standard CustomEvent API
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  NextMQ uses the native <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">CustomEvent</code> API.
-                  No learning curve, no vendor lock-in. Just standard web APIs. The event name is configurable -
-                  use the default <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">'nextmq'</code> or choose your own.
+                  NextMQ uses the native <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">CustomEvent</code> API. No learning curve, no vendor lock-in. Just standard web APIs. The event name is configurable - use the default{' '}
+                  <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">'nextmq'</code> or choose your own.
                 </p>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`import { NEXTMQ_EVENT_NAME } from 'nextmq';
+                  <CodeBlock
+                    code={`import { NEXTMQ_EVENT_NAME } from 'nextmq';
 
 // Option 1: Use the default event name (convenience constant)
 window.dispatchEvent(
@@ -260,7 +191,8 @@ window.dispatchEvent(
 // - Vanilla JavaScript
 // - Third-party scripts
 // - Browser extensions
-// - Any code that can access window`} />
+// - Any code that can access window`}
+                  />
                 </div>
               </div>
 
@@ -270,27 +202,21 @@ window.dispatchEvent(
                     <CheckCircle2 className="w-4 h-4" />
                     No Learning Curve
                   </h4>
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
-                    Uses standard CustomEvent API you already know. No new concepts to learn.
-                  </p>
+                  <p className="text-sm text-blue-800 dark:text-blue-200">Uses standard CustomEvent API you already know. No new concepts to learn.</p>
                 </div>
                 <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-4">
                   <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2 flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4" />
                     Works Everywhere
                   </h4>
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    Dispatch from React, vanilla JS, third-party scripts, or browser extensions.
-                  </p>
+                  <p className="text-sm text-green-800 dark:text-green-200">Dispatch from React, vanilla JS, third-party scripts, or browser extensions.</p>
                 </div>
                 <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 rounded-lg p-4">
                   <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-2 flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4" />
                     Configurable Event Name
                   </h4>
-                  <p className="text-sm text-purple-800 dark:text-purple-200">
-                    Use default 'nextmq' or choose your own. Perfect for multiple instances or avoiding conflicts.
-                  </p>
+                  <p className="text-sm text-purple-800 dark:text-purple-200">Use default 'nextmq' or choose your own. Perfect for multiple instances or avoiding conflicts.</p>
                 </div>
               </div>
 
@@ -302,31 +228,24 @@ window.dispatchEvent(
                 <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
                   <div>
                     <p className="font-semibold mb-2 text-purple-900 dark:text-purple-100">Multiple Instances</p>
-                    <p className="text-purple-800 dark:text-purple-200">
-                      Run multiple NextMQ instances in the same app with different event names. Perfect for micro-frontends or modular architectures.
-                    </p>
+                    <p className="text-purple-800 dark:text-purple-200">Run multiple NextMQ instances in the same app with different event names. Perfect for micro-frontends or modular architectures.</p>
                   </div>
                   <div>
                     <p className="font-semibold mb-2 text-blue-900 dark:text-blue-100">Avoid Conflicts</p>
-                    <p className="text-blue-800 dark:text-blue-200">
-                      Prevent conflicts with other libraries or third-party scripts that might use similar event names. Namespace your events.
-                    </p>
+                    <p className="text-blue-800 dark:text-blue-200">Prevent conflicts with other libraries or third-party scripts that might use similar event names. Namespace your events.</p>
                   </div>
                   <div>
                     <p className="font-semibold mb-2 text-purple-900 dark:text-purple-100">Integration</p>
-                    <p className="text-purple-800 dark:text-purple-200">
-                      Integrate with existing systems that have their own event naming conventions. Use their names directly.
-                    </p>
+                    <p className="text-purple-800 dark:text-purple-200">Integrate with existing systems that have their own event naming conventions. Use their names directly.</p>
                   </div>
                   <div>
                     <p className="font-semibold mb-2 text-blue-900 dark:text-blue-100">Testing & Isolation</p>
-                    <p className="text-blue-800 dark:text-blue-200">
-                      Isolate event streams for testing, mocking, or staging environments. Each environment can use different event names.
-                    </p>
+                    <p className="text-blue-800 dark:text-blue-200">Isolate event streams for testing, mocking, or staging environments. Each environment can use different event names.</p>
                   </div>
                 </div>
                 <div className="mt-4 bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`// Example: Multiple NextMQ instances with different event names
+                  <CodeBlock
+                    code={`// Example: Multiple NextMQ instances with different event names
 
 // Main app events
 <NextMQRootClientEventBridge eventName="app:invoke" />
@@ -341,7 +260,8 @@ window.dispatchEvent(
 <NextMQClientProvider processor={analyticsProcessor} />
 
 // Each instance listens to its own event name
-// No conflicts, complete isolation!`} />
+// No conflicts, complete isolation!`}
+                  />
                 </div>
               </div>
             </div>
@@ -353,9 +273,7 @@ window.dispatchEvent(
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Small Initial Load</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Only ~1KB initial load. Everything else loads dynamically when needed.
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Only ~1KB initial load. Everything else loads dynamically when needed.</p>
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
@@ -386,21 +304,28 @@ window.dispatchEvent(
                 <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 dark:text-green-400 mt-1">1.</span>
-                    <span><strong>Event Bridge (~1KB)</strong> loads immediately and starts listening for events</span>
+                    <span>
+                      <strong>Event Bridge (~1KB)</strong> loads immediately and starts listening for events
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 dark:text-green-400 mt-1">2.</span>
-                    <span><strong>Processor (~19KB)</strong> loads dynamically when NextMQClientProvider mounts</span>
+                    <span>
+                      <strong>Processor (~19KB)</strong> loads dynamically when NextMQClientProvider mounts
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-600 dark:text-green-400 mt-1">3.</span>
-                    <span><strong>Handlers (0KB initial)</strong> load on-demand when their job type is dispatched</span>
+                    <span>
+                      <strong>Handlers (0KB initial)</strong> load on-demand when their job type is dispatched
+                    </span>
                   </li>
                 </ul>
               </div>
 
               <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                <CodeBlock code={`// 1. Event Bridge loads first (~1KB)
+                <CodeBlock
+                  code={`// 1. Event Bridge loads first (~1KB)
 <NextMQRootClientEventBridge />
 // ✅ Listening for events immediately
 
@@ -411,7 +336,8 @@ window.dispatchEvent(
 // 3. Handlers load on-demand (0KB initial)
 // Only when job type is dispatched
 await import('./handlers/cartAdd');
-// ✅ Perfect for code splitting`} />
+// ✅ Perfect for code splitting`}
+                />
               </div>
             </div>
           </div>
@@ -422,9 +348,7 @@ await import('./handlers/cartAdd');
       <section id="requirements" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-gray-50 dark:bg-gray-900/50 rounded-3xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Requirements System</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Gate jobs until requirements are met. Perfect for user consent, authentication, or feature flags.
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Gate jobs until requirements are met. Perfect for user consent, authentication, or feature flags.</p>
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
@@ -434,11 +358,10 @@ await import('./handlers/cartAdd');
                   <CheckCircle2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   Gate Jobs Until Ready
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Jobs with unmet requirements wait in the queue. Once requirements are met, they automatically process.
-                </p>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">Jobs with unmet requirements wait in the queue. Once requirements are met, they automatically process.</p>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`import { setRequirement } from 'nextmq';
+                  <CodeBlock
+                    code={`import { setRequirement } from 'nextmq';
 
 // Dispatch a job with requirements
 window.dispatchEvent(
@@ -453,7 +376,8 @@ window.dispatchEvent(
 
 // Later, when user gives consent
 setRequirement('necessaryConsent', true);
-// ✅ Job automatically processes!`} />
+// ✅ Job automatically processes!`}
+                  />
                 </div>
               </div>
 
@@ -508,8 +432,7 @@ setRequirement('necessaryConsent', true);
                   Debouncing Built-In: Delay + Deduplication
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Combine <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">delay</code> with <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">dedupeKey</code> to get
-                  automatic debouncing! Here's how it works:
+                  Combine <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">delay</code> with <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">dedupeKey</code> to get automatic debouncing! Here's how it works:
                 </p>
                 <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-4 mb-6">
                   <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
@@ -519,22 +442,25 @@ setRequirement('necessaryConsent', true);
                   <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
                     <li className="flex items-start gap-2">
                       <span className="font-bold">If already queued:</span>
-                      <span>New job <strong>replaces</strong> the previous one (debouncing) - resets the delay timer</span>
+                      <span>
+                        New job <strong>replaces</strong> the previous one (debouncing) - resets the delay timer
+                      </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="font-bold">If already completed:</span>
-                      <span>New job is <strong>skipped</strong> (deduplication) - prevents duplicate execution</span>
+                      <span>
+                        New job is <strong>skipped</strong> (deduplication) - prevents duplicate execution
+                      </span>
                     </li>
                   </ul>
                   <p className="text-sm text-blue-700 dark:text-blue-300 mt-3">
                     The same <code className="bg-blue-100 dark:bg-blue-900/50 px-1.5 py-0.5 rounded">dedupeKey</code> provides both behaviors automatically!
                   </p>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Perfect for search inputs, analytics tracking, and any scenario where you want to wait for inactivity.
-                </p>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">Perfect for search inputs, analytics tracking, and any scenario where you want to wait for inactivity.</p>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`// True debouncing: delay + dedupeKey
+                  <CodeBlock
+                    code={`// True debouncing: delay + dedupeKey
 // Multiple rapid calls → only the last one executes after delay
 window.dispatchEvent(
   new CustomEvent('nextmq', {
@@ -556,7 +482,8 @@ window.dispatchEvent(
       delay: 2000 // ⏳ Wait 2 seconds before processing
     }
   })
-);`} />
+);`}
+                  />
                 </div>
               </div>
 
@@ -596,7 +523,8 @@ window.dispatchEvent(
                   Example: Debounced Search (Delay + Deduplication)
                 </h4>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`import { NEXTMQ_EVENT_NAME } from 'nextmq';
+                  <CodeBlock
+                    code={`import { NEXTMQ_EVENT_NAME } from 'nextmq';
 
 function SearchInput() {
   const handleInput = (e) => {
@@ -625,7 +553,8 @@ function SearchInput() {
 // 
 // If user types again after search completes:
 // - New job with same dedupeKey → skipped (deduplication)
-// Perfect debouncing + deduplication! 🎯`} />
+// Perfect debouncing + deduplication! 🎯`}
+                  />
                 </div>
               </div>
             </div>
@@ -637,9 +566,7 @@ function SearchInput() {
       <section id="deduplication" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Job Deduplication</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Prevent duplicate jobs from executing. Perfect for tracking events, analytics, and one-time actions.
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Prevent duplicate jobs from executing. Perfect for tracking events, analytics, and one-time actions.</p>
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
@@ -650,12 +577,11 @@ function SearchInput() {
                   Prevent Duplicate Execution
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Use <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">dedupeKey</code> to ensure a job
-                  only executes once per page lifecycle. Jobs with the same dedupeKey are automatically skipped if already
-                  processed or queued.
+                  Use <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">dedupeKey</code> to ensure a job only executes once per page lifecycle. Jobs with the same dedupeKey are automatically skipped if already processed or queued.
                 </p>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`// Order completion tracking - only execute once
+                  <CodeBlock
+                    code={`// Order completion tracking - only execute once
 window.dispatchEvent(
   new CustomEvent('nextmq', {
     detail: {
@@ -670,7 +596,8 @@ window.dispatchEvent(
 );
 
 // If called again (page re-render, navigation, etc.)
-// The job is automatically skipped ✅`} />
+// The job is automatically skipped ✅`}
+                  />
                 </div>
               </div>
 
@@ -710,9 +637,7 @@ window.dispatchEvent(
       <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-gray-50 dark:bg-gray-900/50 rounded-3xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">How It Works</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Tiny Event Bridge loads in first bytes (~1KB), then processor and handlers load dynamically
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Tiny Event Bridge loads in first bytes (~1KB), then processor and handlers load dynamically</p>
         </div>
         <div className="max-w-5xl mx-auto">
           <EventFlowVisualization />
@@ -723,9 +648,7 @@ window.dispatchEvent(
       <section id="install" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Installation</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Get started in minutes
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Get started in minutes</p>
         </div>
         <div className="max-w-2xl mx-auto">
           <div className="bg-gray-900 dark:bg-gray-950 rounded-xl p-8 border border-gray-800">
@@ -746,9 +669,7 @@ window.dispatchEvent(
       <section id="docs" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Quick Start</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Set up NextMQ in your Next.js app in 4 simple steps
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Set up NextMQ in your Next.js app in 4 simple steps</p>
           <p className="text-sm text-gray-500 dark:text-gray-500 mt-4">
             💡 Tip: Add <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">&lt;NextMQDevTools /&gt;</code> to debug jobs in real-time
           </p>
@@ -846,9 +767,7 @@ window.dispatchEvent(
       <section id="job-status" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-green-950/30 rounded-3xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Status Hooks</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Track job status in real-time with React hooks. Perfect for updating UI based on job state.
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Track job status in real-time with React hooks. Perfect for updating UI based on job state.</p>
         </div>
         <div className="max-w-4xl mx-auto mb-12">
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
@@ -859,11 +778,11 @@ window.dispatchEvent(
                   Real-Time Job Status Tracking
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Use the <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">useJobStatus</code> hook to track
-                  job status in your React components. Perfect for showing loading states, success messages, or error handling.
+                  Use the <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">useJobStatus</code> hook to track job status in your React components. Perfect for showing loading states, success messages, or error handling.
                 </p>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`import { useJobStatus, useNextmq } from 'nextmq';
+                  <CodeBlock
+                    code={`import { useJobStatus, useNextmq } from 'nextmq';
 
 function AddToCartButton({ productId }) {
   const [jobId, setJobId] = useState<string | null>(null);
@@ -882,7 +801,8 @@ function AddToCartButton({ productId }) {
   if (status === 'failed') return <Error error={error} />;
   if (status === 'completed') return <Success data={result} />;
   return <button onClick={handleClick}>Add to Cart</button>;
-}`} />
+}`}
+                  />
                 </div>
               </div>
 
@@ -893,10 +813,18 @@ function AddToCartButton({ productId }) {
                     Status States
                   </h4>
                   <ul className="text-sm text-purple-800 dark:text-purple-200 space-y-1">
-                    <li>• <code className="bg-purple-100 dark:bg-purple-900/50 px-1 rounded">pending</code> - Job queued</li>
-                    <li>• <code className="bg-purple-100 dark:bg-purple-900/50 px-1 rounded">processing</code> - Job executing</li>
-                    <li>• <code className="bg-purple-100 dark:bg-purple-900/50 px-1 rounded">completed</code> - Job finished</li>
-                    <li>• <code className="bg-purple-100 dark:bg-purple-900/50 px-1 rounded">failed</code> - Job errored</li>
+                    <li>
+                      • <code className="bg-purple-100 dark:bg-purple-900/50 px-1 rounded">pending</code> - Job queued
+                    </li>
+                    <li>
+                      • <code className="bg-purple-100 dark:bg-purple-900/50 px-1 rounded">processing</code> - Job executing
+                    </li>
+                    <li>
+                      • <code className="bg-purple-100 dark:bg-purple-900/50 px-1 rounded">completed</code> - Job finished
+                    </li>
+                    <li>
+                      • <code className="bg-purple-100 dark:bg-purple-900/50 px-1 rounded">failed</code> - Job errored
+                    </li>
                   </ul>
                 </div>
                 <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-4">
@@ -923,9 +851,7 @@ function AddToCartButton({ productId }) {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Dynamic Loading Proof</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Handlers are loaded on-demand. Portal dialogs, notifications, and more can be lazy-loaded easily.
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Handlers are loaded on-demand. Portal dialogs, notifications, and more can be lazy-loaded easily.</p>
         </div>
         <DynamicLoadingProof />
       </section>
@@ -934,17 +860,14 @@ function AddToCartButton({ productId }) {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-gray-50 dark:bg-gray-900/50 rounded-3xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Lazy-Load Portal Dialogs</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Perfect for modals, dialogs, and overlays that are rarely used
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Perfect for modals, dialogs, and overlays that are rarely used</p>
         </div>
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
             <h3 className="text-xl font-semibold mb-4">Example: Portal Dialog Handler</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              This handler (and its React components) are only loaded when the dialog is actually needed.
-            </p>
-            <CodeBlock code={`// app/handlers/portalDialog.tsx
+            <p className="text-gray-600 dark:text-gray-400 mb-4">This handler (and its React components) are only loaded when the dialog is actually needed.</p>
+            <CodeBlock
+              code={`// app/handlers/portalDialog.tsx
 import type { Job } from 'nextmq';
 import { createPortal } from 'react-dom';
 
@@ -968,15 +891,15 @@ export default async function portalDialogHandler(
   // This entire handler chunk is loaded dynamically
   // Only when 'portal.dialog' job is dispatched
   return <Dialog title={job.payload.title} content={job.payload.content} />;
-}`} />
+}`}
+            />
           </div>
 
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-6">
             <h3 className="text-xl font-semibold mb-4">Call from Anywhere</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Trigger portal dialogs from anywhere in your app, or even from third-party scripts.
-            </p>
-            <CodeBlock code={`// From your React component
+            <p className="text-gray-600 dark:text-gray-400 mb-4">Trigger portal dialogs from anywhere in your app, or even from third-party scripts.</p>
+            <CodeBlock
+              code={`// From your React component
 window.dispatchEvent(
   new CustomEvent('nextmq', {
     detail: {
@@ -1000,7 +923,9 @@ window.dispatchEvent(
       }
     })
   );
-})();`} language="javascript" />
+})();`}
+              language="javascript"
+            />
           </div>
 
           <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-xl p-6">
@@ -1011,19 +936,27 @@ window.dispatchEvent(
             <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-                <span><strong>Smaller initial bundle:</strong> Dialog code not loaded until needed</span>
+                <span>
+                  <strong>Smaller initial bundle:</strong> Dialog code not loaded until needed
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-                <span><strong>Better performance:</strong> Faster page loads, especially on mobile</span>
+                <span>
+                  <strong>Better performance:</strong> Faster page loads, especially on mobile
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-                <span><strong>Third-party friendly:</strong> External scripts can trigger dialogs without React context</span>
+                <span>
+                  <strong>Third-party friendly:</strong> External scripts can trigger dialogs without React context
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-blue-600 dark:text-blue-400 mt-1">•</span>
-                <span><strong>Automatic code splitting:</strong> Next.js handles chunking automatically</span>
+                <span>
+                  <strong>Automatic code splitting:</strong> Next.js handles chunking automatically
+                </span>
               </li>
             </ul>
           </div>
@@ -1034,9 +967,7 @@ window.dispatchEvent(
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-950/30 dark:via-purple-950/30 dark:to-pink-950/30 rounded-3xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Built for Next.js</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Seamlessly integrates with Next.js Server Actions, Server Components, and the App Router
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Seamlessly integrates with Next.js Server Actions, Server Components, and the App Router</p>
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
@@ -1044,28 +975,28 @@ window.dispatchEvent(
               <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               Server Actions Integration
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Handlers can call Server Actions directly. The handler code (including Server Action imports)
-              is code-split and only loaded when needed.
-            </p>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">Handlers can call Server Actions directly. The handler code (including Server Action imports) is code-split and only loaded when needed.</p>
             <div className="space-y-4">
               <div>
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Server Action:</p>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`// app/actions/cart.ts
+                  <CodeBlock
+                    code={`// app/actions/cart.ts
 'use server';
 
 export async function addToCart(ean: string, quantity: number) {
   // Server-side logic - database, validation, etc.
   const cart = await db.cart.add({ ean, quantity });
   return { success: true, cartId: cart.id };
-}`} />
+}`}
+                  />
                 </div>
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Handler (code-split):</p>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`// app/handlers/cartAdd.tsx
+                  <CodeBlock
+                    code={`// app/handlers/cartAdd.tsx
 import type { Job } from 'nextmq';
 import { addToCart } from '../actions/cart'; // Server Action
 
@@ -1083,7 +1014,8 @@ export default async function cartAddHandler(
   }
   
   return <Error>Failed to add</Error>;
-}`} />
+}`}
+                  />
                 </div>
               </div>
             </div>
@@ -1091,9 +1023,7 @@ export default async function cartAddHandler(
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
-                    Why This Matters
-                  </p>
+                  <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">Why This Matters</p>
                   <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
                     <li>• Server Action code is bundled with the handler (code-split)</li>
                     <li>• Only loads when the job type is dispatched</li>
@@ -1112,9 +1042,7 @@ export default async function cartAddHandler(
       <section id="devtools" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-gray-50 dark:bg-gray-900/50 rounded-3xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Built-in DevTools</h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Debug and monitor your jobs in real-time with the included DevTools component
-          </p>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Debug and monitor your jobs in real-time with the included DevTools component</p>
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-gray-800 p-8 shadow-lg">
@@ -1123,8 +1051,7 @@ export default async function cartAddHandler(
               Real-Time Job Monitoring
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Add <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">&lt;NextMQDevTools /&gt;</code> to any page
-              to see live updates of your job queue, event buffer, and requirement status.
+              Add <code className="bg-gray-100 dark:bg-gray-900 px-2 py-1 rounded">&lt;NextMQDevTools /&gt;</code> to any page to see live updates of your job queue, event buffer, and requirement status.
             </p>
 
             <div className="mb-6 flex justify-center">
@@ -1135,7 +1062,8 @@ export default async function cartAddHandler(
               <div>
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Usage:</p>
                 <div className="bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-                  <CodeBlock code={`import { NextMQDevTools } from 'nextmq';
+                  <CodeBlock
+                    code={`import { NextMQDevTools } from 'nextmq';
 
 export default function Page() {
   return (
@@ -1144,7 +1072,8 @@ export default function Page() {
       <YourPageContent />
     </>
   );
-}`} />
+}`}
+                  />
                 </div>
               </div>
             </div>
@@ -1178,9 +1107,7 @@ export default function Page() {
               <div className="flex items-start gap-3">
                 <Bug className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
-                    Features
-                  </p>
+                  <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">Features</p>
                   <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
                     <li>• Floating panel in top-right corner (non-intrusive)</li>
                     <li>• Updates every 500ms when open</li>
@@ -1196,26 +1123,17 @@ export default function Page() {
         </div>
       </section>
 
-
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-12 text-center">
           <h2 className="text-4xl font-bold text-white mb-4">Ready to get started?</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Start building with NextMQ today. Simple, standard, and built for Next.js.
-          </p>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">Start building with NextMQ today. Simple, standard, and built for Next.js.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="#install"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
-            >
+            <Link href="#install" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors">
               Install Now
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link
-              href="https://github.com/danieljameswilliams/nextmq"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-blue-500/20 text-white font-semibold rounded-lg hover:bg-blue-500/30 transition-colors border border-blue-400/30"
-            >
+            <Link href="https://github.com/danieljameswilliams/nextmq" className="inline-flex items-center gap-2 px-8 py-4 bg-blue-500/20 text-white font-semibold rounded-lg hover:bg-blue-500/30 transition-colors border border-blue-400/30">
               <Github className="w-4 h-4" />
               View on GitHub
             </Link>
@@ -1233,61 +1151,29 @@ export default function Page() {
               </div>
               <span className="text-lg font-bold">NextMQ</span>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              MIT License • Built for Next.js
-            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">MIT License • Built for Next.js</p>
           </div>
         </div>
       </footer>
     </div>
-  );
+  )
 }
 
-function FeatureCard({
-  icon,
-  title,
-  description,
-  highlight,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  highlight?: boolean;
-}) {
+function FeatureCard({ icon, title, description, highlight }: { icon: React.ReactNode; title: string; description: string; highlight?: boolean }) {
   return (
-    <div className={`bg-white dark:bg-gray-950 rounded-xl border-2 p-8 transition-colors ${highlight
-      ? 'border-blue-300 dark:border-blue-700 hover:border-blue-400 dark:hover:border-blue-600 shadow-lg'
-      : 'border-gray-200 dark:border-gray-800 hover:border-blue-300 dark:hover:border-blue-800'
-      }`}>
-      <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${highlight
-        ? 'bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400'
-        : 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400'
-        }`}>
-        {icon}
-      </div>
+    <div className={`bg-white dark:bg-gray-950 rounded-xl border-2 p-8 transition-colors ${highlight ? 'border-blue-300 dark:border-blue-700 hover:border-blue-400 dark:hover:border-blue-600 shadow-lg' : 'border-gray-200 dark:border-gray-800 hover:border-blue-300 dark:hover:border-blue-800'}`}>
+      <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${highlight ? 'bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400' : 'bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400'}`}>{icon}</div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
       <p className="text-gray-600 dark:text-gray-400">{description}</p>
     </div>
-  );
+  )
 }
 
-function Step({
-  number,
-  title,
-  description,
-  code,
-}: {
-  number: number;
-  title: string;
-  description: string;
-  code: string;
-}) {
+function Step({ number, title, description, code }: { number: number; title: string; description: string; code: string }) {
   return (
     <div className="flex gap-6">
       <div className="flex-shrink-0">
-        <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">
-          {number}
-        </div>
+        <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg">{number}</div>
       </div>
       <div className="flex-1">
         <h3 className="text-2xl font-semibold mb-2">{title}</h3>
@@ -1297,25 +1183,14 @@ function Step({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-function QuickNavLink({
-  href,
-  icon,
-  children,
-}: {
-  href: string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
+function QuickNavLink({ href, icon, children }: { href: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <Link
-      href={href}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
-    >
+    <Link href={href} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
       {icon}
       {children}
     </Link>
-  );
+  )
 }

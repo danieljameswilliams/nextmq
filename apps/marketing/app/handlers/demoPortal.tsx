@@ -1,28 +1,41 @@
-import type { Job } from 'nextmq';
-import type { ReactElement } from 'react';
-import { createPortal } from 'react-dom';
-import { useState, useEffect } from 'react';
+import type { Job } from 'nextmq'
+import type { ReactElement } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 function PortalDialog({ title, content }: { title: string; content: string }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(true)
 
   useEffect(() => {
     if (!isOpen) {
       // Auto-remove after animation
       setTimeout(() => {
-        const element = document.querySelector('[data-portal-dialog]');
+        const element = document.querySelector('[data-portal-dialog]')
         if (element) {
-          element.remove();
+          element.remove()
         }
-      }, 200);
+      }, 200)
     }
-  }, [isOpen]);
+  }, [isOpen])
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
+
+  const handleBackdropClick = () => {
+    setIsOpen(false)
+  }
+
+  const handleBackdropKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false)
+    }
+  }
 
   return createPortal(
     <div
       data-portal-dialog
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="portal-title"
       style={{
         position: 'fixed',
         inset: 0,
@@ -33,9 +46,11 @@ function PortalDialog({ title, content }: { title: string; content: string }) {
         zIndex: 10000,
         animation: 'fadeIn 0.2s ease-out',
       }}
-      onClick={() => setIsOpen(false)}
+      onClick={handleBackdropClick}
+      onKeyDown={handleBackdropKeyDown}
     >
       <div
+        role="document"
         style={{
           backgroundColor: 'white',
           borderRadius: '0.5rem',
@@ -45,10 +60,14 @@ function PortalDialog({ title, content }: { title: string; content: string }) {
           boxShadow: '0 20px 25px rgba(0, 0, 0, 0.15)',
         }}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
       >
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>{title}</h2>
+        <h2 id="portal-title" style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>
+          {title}
+        </h2>
         <p style={{ color: '#6b7280', marginBottom: '1rem' }}>{content}</p>
         <button
+          type="button"
           onClick={() => setIsOpen(false)}
           style={{
             padding: '0.5rem 1rem',
@@ -64,16 +83,13 @@ function PortalDialog({ title, content }: { title: string; content: string }) {
         </button>
       </div>
     </div>,
-    document.body,
-  );
+    document.body
+  )
 }
 
-export default async function demoPortalHandler(
-  job: Job<{ title: string; content: string }>,
-): Promise<ReactElement> {
+export default async function demoPortalHandler(job: Job<{ title: string; content: string }>): Promise<ReactElement> {
   // Simulate some async work
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  
-  return <PortalDialog title={job.payload.title} content={job.payload.content} />;
-}
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
+  return <PortalDialog title={job.payload.title} content={job.payload.content} />
+}

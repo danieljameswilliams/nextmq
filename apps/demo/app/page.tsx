@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
-import { NEXTMQ_EVENT_NAME, NextMQDevTools } from 'nextmq';
+import { NEXTMQ_EVENT_NAME, NextMQDevTools } from 'nextmq'
 
 // Example requirement key - in real app this would come from requirements.ts
-const REQ = {
+const _REQ = {
   necessaryConsent: 'necessaryConsent',
-} as const;
+} as const
 
 export default function Home() {
   const handleAddToCart = () => {
-    const ean = '1234567890123'; // Example EAN
-    console.log('[page] Dispatching cart.add event:', ean);
+    const ean = '1234567890123' // Example EAN
+    console.log('[page] Dispatching cart.add event:', ean)
     window.dispatchEvent(
       new CustomEvent(NEXTMQ_EVENT_NAME, {
         detail: {
@@ -18,12 +18,12 @@ export default function Home() {
           payload: { ean, quantity: 1 },
           requirements: [],
         },
-      }),
-    );
-  };
+      })
+    )
+  }
 
   const handleRemoveFromCart = () => {
-    const ean = '1234567890123'; // Example EAN
+    const ean = '1234567890123' // Example EAN
     window.dispatchEvent(
       new CustomEvent(NEXTMQ_EVENT_NAME, {
         detail: {
@@ -31,9 +31,9 @@ export default function Home() {
           payload: { ean },
           requirements: [],
         },
-      }),
-    );
-  };
+      })
+    )
+  }
 
   return (
     <>
@@ -42,6 +42,7 @@ export default function Home() {
         <h1>NextMQ Demo</h1>
         <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
           <button
+            type="button"
             onClick={handleAddToCart}
             style={{
               padding: '0.75rem 1.5rem',
@@ -56,6 +57,7 @@ export default function Home() {
             Add to Cart
           </button>
           <button
+            type="button"
             onClick={handleRemoveFromCart}
             style={{
               padding: '0.75rem 1.5rem',
@@ -72,5 +74,5 @@ export default function Home() {
         </div>
       </div>
     </>
-  );
+  )
 }

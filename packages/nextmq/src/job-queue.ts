@@ -1,15 +1,15 @@
 // src/JobQueue.ts
 /**
  * JobQueue - Core queue system for processing jobs asynchronously
- * 
+ *
  * **Simple Flow:** CustomEvent → EventBridge → Provider → Processor → Handler
- * 
+ *
  * This queue:
  * - Queues jobs and processes them sequentially
  * - Gates jobs until requirements are met (e.g., user consent)
  * - Renders JSX components returned from processors
  * - Processes one job at a time to avoid blocking
- * 
+ *
  * @example
  * ```ts
  * const queue = new JobQueue();
@@ -21,96 +21,90 @@
  * ```
  */
 
-'use client';
+'use client'
 
-import { isValidElement } from 'react';
-import type React from 'react';
-import { getRequirement, onRequirementsChange, type RequirementKey } from './requirements';
+import type React from 'react'
+import { isValidElement } from 'react'
+import { getRequirement, onRequirementsChange, type RequirementKey } from './requirements'
 
 /** Job type identifier (e.g., 'cart.add', 'track.event') */
-export type JobType = string;
+export type JobType = string
 
 /** Job structure containing type, payload, and optional requirements */
 export interface Job<TPayload = unknown> {
   /** Unique job identifier */
-  id: string;
+  id: string
   /** Job type (used to route to handler) */
-  type: JobType;
+  type: JobType
   /** Job payload data */
-  payload: TPayload;
+  payload: TPayload
   /** Optional requirement keys that must be met before processing */
-  requirements?: RequirementKey[];
+  requirements?: RequirementKey[]
   /** Optional deduplication key - jobs with the same dedupeKey will replace previous queued jobs (enables debouncing when combined with delay) */
-  dedupeKey?: string;
+  dedupeKey?: string
   /** Optional delay in milliseconds before processing. Job will wait until createdAt + delay has passed. Combine with dedupeKey for debouncing. */
-  delay?: number;
+  delay?: number
   /** Timestamp when job was created */
-  createdAt: number;
+  createdAt: number
 }
 
 /** Result that a processor can return (void, JSX, or null) */
-export type ProcessorResult = void | React.ReactElement | null;
+export type ProcessorResult = undefined | React.ReactElement | null
 
 /** Processor function that routes jobs to handlers using dynamic imports */
-export type Processor<TPayload = unknown> = (job: Job<TPayload>) => Promise<ProcessorResult>;
+export type Processor<TPayload = unknown> = (job: Job<TPayload>) => Promise<ProcessorResult>
 
 /** Callback for rendering JSX components returned from processors */
-export type RenderCallback = (element: React.ReactElement | null, jobId: string) => void;
+export type RenderCallback = (element: React.ReactElement | null, jobId: string) => void
 
 /** Job status type */
-export type JobStatus = 'pending' | 'processing' | 'completed' | 'failed';
+export type JobStatus = 'pending' | 'processing' | 'completed' | 'failed'
 
 /** Job status information */
 export interface JobStatusInfo {
-  status: JobStatus;
-  result?: ProcessorResult;
-  error?: Error | unknown;
-  job?: Job;
+  status: JobStatus
+  result?: ProcessorResult
+  error?: Error | unknown
+  job?: Job
 }
 
 /** Callback for job status changes */
-export type JobStatusCallback = (jobId: string, status: JobStatusInfo) => void;
+export type JobStatusCallback = (jobId: string, status: JobStatusInfo) => void
 
 export class JobQueue {
-  private queue: Job[] = [];
-  private processor: Processor<any> | null = null;
-  private isProcessing = false;
-  private renderCallback: RenderCallback | null = null;
+  private queue: Job[] = []
+  private processor: Processor<unknown> | null = null
+  private isProcessing = false
+  private renderCallback: RenderCallback | null = null
   /** Track completed jobs by dedupeKey to prevent duplicates across page lifecycle */
-  private completedJobs: Set<string> = new Set();
+  private completedJobs: Set<string> = new Set()
   /** Track job status and results */
-  private jobStatuses: Map<string, JobStatusInfo> = new Map();
-  /** Track currently processing job ID */
-  private processingJobId: string | null = null;
+  private jobStatuses: Map<string, JobStatusInfo> = new Map()
   /** Subscribers to job status changes */
-  private statusSubscribers: Set<JobStatusCallback> = new Set();
+  private statusSubscribers: Set<JobStatusCallback> = new Set()
 
   constructor() {
     onRequirementsChange(() => {
-      void this.process();
-    });
+      void this.process()
+    })
   }
 
   /**
    * Register the single processor function that handles all job types.
    * The processor should handle routing to code-split handlers based on job.type.
    */
-  setProcessor(processor: Processor<any>) {
+  setProcessor(processor: Processor<unknown>) {
     if (typeof processor !== 'function') {
-      const isDevelopment =
-        typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+      const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
       if (isDevelopment) {
-        console.error(
-          '[nextmq] ❌ JobQueue.setProcessor() requires a function.\n' +
-          'The processor must be an async function that routes jobs to handlers.',
-        );
+        console.error('[nextmq] ❌ JobQueue.setProcessor() requires a function.\n' + 'The processor must be an async function that routes jobs to handlers.')
       }
-      return;
+      return
     }
 
-    this.processor = processor;
+    this.processor = processor
     // Process any queued jobs now that processor is ready
-    void this.process();
+    void this.process()
   }
 
   /**
@@ -118,12 +112,12 @@ export class JobQueue {
    * When a processor returns JSX, this callback will be invoked.
    */
   setRenderCallback(callback: RenderCallback | null) {
-    this.renderCallback = callback;
+    this.renderCallback = callback
   }
 
   /**
    * Enqueue a new job for processing.
-   * 
+   *
    * @param type - Job type identifier (e.g., 'cart.add')
    * @param payload - Job payload data
    * @param requirements - Optional requirement keys that must be met before processing
@@ -132,7 +126,7 @@ export class JobQueue {
    *   - If already queued: previous job is replaced (enables debouncing when combined with delay)
    * @param delay - Optional delay in milliseconds before processing. Job will wait until createdAt + delay has passed
    * @returns Job ID for tracking, or null if job was deduplicated (already completed)
-   * 
+   *
    * @example
    * // Debouncing: delay + dedupeKey
    * queue.enqueue('search.perform', { query: 'nextjs' }, [], 'search-query', 300);
@@ -141,44 +135,32 @@ export class JobQueue {
    * // - If already completed: skipped (deduplication)
    * // Only the last queued job executes after 300ms delay
    */
-  enqueue<TPayload>(
-    type: JobType,
-    payload: TPayload,
-    requirements: RequirementKey[] = [],
-    dedupeKey?: string,
-    delay?: number,
-  ): string | null {
+  enqueue<TPayload>(type: JobType, payload: TPayload, requirements: RequirementKey[] = [], dedupeKey?: string, delay?: number): string | null {
     // Check for duplicate if dedupeKey is provided
     if (dedupeKey) {
       // Check if already completed - skip (deduplication)
       if (this.completedJobs.has(dedupeKey)) {
-        const isDevelopment =
-          typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+        const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
         if (isDevelopment) {
-          console.log(
-            `[nextmq] ⏭️ Job skipped (duplicate): "${type}" with dedupeKey "${dedupeKey}" - already processed`,
-          );
+          console.log(`[nextmq] ⏭️ Job skipped (duplicate): "${type}" with dedupeKey "${dedupeKey}" - already processed`)
         }
-        return null;
+        return null
       }
 
       // Check if already in queue - replace it (for debouncing behavior)
-      const existingJobIndex = this.queue.findIndex((job) => job.dedupeKey === dedupeKey);
+      const existingJobIndex = this.queue.findIndex((job) => job.dedupeKey === dedupeKey)
       if (existingJobIndex !== -1) {
-        const existingJob = this.queue[existingJobIndex];
+        const existingJob = this.queue[existingJobIndex]
         if (existingJob) {
           // Remove the old job and mark it as cancelled
-          this.queue.splice(existingJobIndex, 1);
+          this.queue.splice(existingJobIndex, 1)
           this.updateJobStatus(existingJob.id, {
             status: 'pending',
             job: existingJob,
-          });
-          const isDevelopment =
-            typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+          })
+          const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
           if (isDevelopment) {
-            console.log(
-              `[nextmq] 🔄 Job replaced (debounce): "${type}" with dedupeKey "${dedupeKey}" - previous queued job cancelled`,
-            );
+            console.log(`[nextmq] 🔄 Job replaced (debounce): "${type}" with dedupeKey "${dedupeKey}" - previous queued job cancelled`)
           }
           // Continue to create new job with updated payload/delay
           // This enables debouncing: new job replaces old one, resetting the delay timer
@@ -194,37 +176,36 @@ export class JobQueue {
       dedupeKey,
       delay,
       createdAt: Date.now(),
-    };
+    }
 
     // Initialize job status as pending
     this.updateJobStatus(job.id, {
       status: 'pending',
       job,
-    });
+    })
 
-    this.queue.push(job);
-    void this.process();
-    return job.id;
+    this.queue.push(job)
+    void this.process()
+    return job.id
   }
 
   /**
    * Update job status and notify subscribers
    */
   private updateJobStatus(jobId: string, statusInfo: JobStatusInfo) {
-    this.jobStatuses.set(jobId, statusInfo);
+    this.jobStatuses.set(jobId, statusInfo)
     // Notify all subscribers
     this.statusSubscribers.forEach((callback) => {
       try {
-        callback(jobId, statusInfo);
+        callback(jobId, statusInfo)
       } catch (err) {
         // Ignore errors from subscribers
-        const isDevelopment =
-          typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+        const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
         if (isDevelopment) {
-          console.error('[nextmq] Error in job status subscriber:', err);
+          console.error('[nextmq] Error in job status subscriber:', err)
         }
       }
-    });
+    })
   }
 
   /**
@@ -232,25 +213,25 @@ export class JobQueue {
    * @returns Unsubscribe function
    */
   subscribeToJobStatus(callback: JobStatusCallback): () => void {
-    this.statusSubscribers.add(callback);
+    this.statusSubscribers.add(callback)
     // Immediately notify about existing job statuses
     this.jobStatuses.forEach((statusInfo, jobId) => {
       try {
-        callback(jobId, statusInfo);
-      } catch (err) {
+        callback(jobId, statusInfo)
+      } catch (_err) {
         // Ignore errors
       }
-    });
+    })
     return () => {
-      this.statusSubscribers.delete(callback);
-    };
+      this.statusSubscribers.delete(callback)
+    }
   }
 
   /**
    * Get current job status
    */
   getJobStatus(jobId: string): JobStatusInfo | null {
-    return this.jobStatuses.get(jobId) || null;
+    return this.jobStatuses.get(jobId) || null
   }
 
   /**
@@ -259,19 +240,19 @@ export class JobQueue {
    */
   private generateJobId(): string {
     if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
-      return crypto.randomUUID();
+      return crypto.randomUUID()
     }
-    return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`
   }
 
   private requirementsMet(job: Job) {
-    if (!job.requirements?.length) return true;
-    return job.requirements.every((k) => getRequirement(k));
+    if (!job.requirements?.length) return true
+    return job.requirements.every((k) => getRequirement(k))
   }
 
   private delayElapsed(job: Job) {
-    if (!job.delay) return true;
-    return Date.now() >= job.createdAt + job.delay;
+    if (!job.delay) return true
+    return Date.now() >= job.createdAt + job.delay
   }
 
   /**
@@ -280,111 +261,97 @@ export class JobQueue {
    * Yields to the event loop between jobs to avoid blocking.
    */
   private async process() {
-    if (this.isProcessing || !this.processor) return;
-    
-    this.isProcessing = true;
+    if (this.isProcessing || !this.processor) return
+
+    this.isProcessing = true
 
     try {
       while (this.queue.length > 0) {
         // Find first job that meets requirements and delay has elapsed
-        const jobIndex = this.queue.findIndex(
-          (job) => this.requirementsMet(job) && this.delayElapsed(job),
-        );
-        
+        const jobIndex = this.queue.findIndex((job) => this.requirementsMet(job) && this.delayElapsed(job))
+
         // No processable job found
         if (jobIndex === -1) {
           // If there are jobs waiting for delay, schedule a retry
-          const hasDelayedJobs = this.queue.some((job) => job.delay && !this.delayElapsed(job));
+          const hasDelayedJobs = this.queue.some((job) => job.delay && !this.delayElapsed(job))
           if (hasDelayedJobs) {
             // Find the earliest delayed job and schedule retry
-            const delayedJobs = this.queue.filter((job) => job.delay && !this.delayElapsed(job));
+            const delayedJobs = this.queue.filter((job) => job.delay && !this.delayElapsed(job))
             if (delayedJobs.length > 0) {
-              const earliestDelay = Math.min(
-                ...delayedJobs.map((job) => job.createdAt + (job.delay || 0) - Date.now()),
-              );
+              const earliestDelay = Math.min(...delayedJobs.map((job) => job.createdAt + (job.delay || 0) - Date.now()))
               // Wait until the earliest delayed job is ready, but cap at reasonable interval
-              await new Promise((resolve) =>
-                setTimeout(resolve, Math.max(0, Math.min(earliestDelay, 1000))),
-              );
+              await new Promise((resolve) => setTimeout(resolve, Math.max(0, Math.min(earliestDelay, 1000))))
               // Continue loop to check again
-              continue;
+              continue
             }
           }
-          break;
+          break
         }
 
         // Remove and process the job
-        const job = this.queue.splice(jobIndex, 1)[0];
-        if (!job) break;
+        const job = this.queue.splice(jobIndex, 1)[0]
+        if (!job) break
 
         // Update status to processing
-        this.processingJobId = job.id;
+        this.processingJobId = job.id
         this.updateJobStatus(job.id, {
           status: 'processing',
           job,
-        });
+        })
 
         try {
-          const result = await this.processor(job);
-          
+          const result = await this.processor(job)
+
           // Mark job as completed for deduplication
           if (job.dedupeKey) {
-            this.completedJobs.add(job.dedupeKey);
+            this.completedJobs.add(job.dedupeKey)
           }
-          
+
           // Update status to completed
           this.updateJobStatus(job.id, {
             status: 'completed',
             result,
             job,
-          });
-          
+          })
+
           // Render JSX if processor returned a React element
           if (result && isValidElement(result) && this.renderCallback) {
-            this.renderCallback(result, job.id);
+            this.renderCallback(result, job.id)
           }
         } catch (err) {
           // Even if job fails, mark as completed for deduplication
           // (prevents retrying the same dedupeKey immediately)
           if (job.dedupeKey) {
-            this.completedJobs.add(job.dedupeKey);
+            this.completedJobs.add(job.dedupeKey)
           }
-          
+
           // Update status to failed
           this.updateJobStatus(job.id, {
             status: 'failed',
             error: err,
             job,
-          });
-          
-          const isDevelopment =
-            typeof process !== 'undefined' && process.env.NODE_ENV !== 'production';
+          })
+
+          const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
 
           if (isDevelopment) {
-            console.error(
-              `[nextmq] ❌ Job processing failed: "${job.type}"\n` +
-              `Job ID: ${job.id}\n` +
-              `Error: ${err instanceof Error ? err.message : String(err)}\n` +
-              (err instanceof Error && err.stack
-                ? `\nStack trace:\n${err.stack}`
-                : ''),
-            );
+            console.error(`[nextmq] ❌ Job processing failed: "${job.type}"\nJob ID: ${job.id}\nError: ${err instanceof Error ? err.message : String(err)}\n${err instanceof Error && err.stack ? `\nStack trace:\n${err.stack}` : ''}`)
           } else {
             console.error('[nextmq] Job processing failed:', {
               jobId: job.id,
               jobType: job.type,
               error: err,
-            });
+            })
           }
         } finally {
-          this.processingJobId = null;
+          this.processingJobId = null
         }
 
         // Yield to event loop before processing next job
-        await new Promise((resolve) => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0))
       }
     } finally {
-      this.isProcessing = false;
+      this.isProcessing = false
     }
   }
 
@@ -402,6 +369,6 @@ export class JobQueue {
       isProcessing: this.isProcessing,
       processorReady: this.processor !== null,
       completedJobsCount: this.completedJobs.size,
-    };
+    }
   }
 }

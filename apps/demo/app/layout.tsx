@@ -1,9 +1,9 @@
-import type { Metadata } from "next"
-import { NextMQRootClientEventBridge, NextMQClientProvider } from "nextmq"
-import { processor } from "./processors"
+import type { Metadata } from 'next'
+import { NextMQClientProvider, NextMQRootClientEventBridge } from 'nextmq'
+import { processor } from './processors'
 
 export const metadata: Metadata = {
-  title: "NextMQ",
+  title: 'NextMQ',
 }
 
 export default function RootLayout({
@@ -16,9 +16,7 @@ export default function RootLayout({
       <body>
         <NextMQRootClientEventBridge />
 
-        <NextMQClientProvider processor={processor}>
-          {children}
-        </NextMQClientProvider>
+        <NextMQClientProvider processor={processor}>{children}</NextMQClientProvider>
       </body>
     </html>
   )

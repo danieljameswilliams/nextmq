@@ -1,5 +1,5 @@
-import type { Job } from 'nextmq';
-import type { ReactElement } from 'react';
+import type { Job } from 'nextmq'
+import type { ReactElement } from 'react'
 
 function Notification({ message }: { message: string }) {
   return (
@@ -20,15 +20,12 @@ function Notification({ message }: { message: string }) {
       <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>✓ Notification</div>
       <div style={{ fontSize: '0.875rem' }}>{message}</div>
     </div>
-  );
+  )
 }
 
-export default async function demoNotificationHandler(
-  job: Job<{ message: string }>,
-): Promise<ReactElement> {
+export default async function demoNotificationHandler(job: Job<{ message: string }>): Promise<ReactElement> {
   // Simulate some async work
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  
-  return <Notification message={job.payload.message} />;
-}
+  await new Promise((resolve) => setTimeout(resolve, 100))
 
+  return <Notification message={job.payload.message} />
+}

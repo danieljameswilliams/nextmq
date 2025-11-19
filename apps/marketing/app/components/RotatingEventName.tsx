@@ -1,35 +1,24 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react'
 
-const eventNames = [
-  'nextmq',
-  'myApp',
-  'helloMcNerd',
-  'app:jobs',
-  'shop:actions',
-  'analytics:track',
-  'admin:commands',
-  'portal:show',
-  'cart:update',
-  'user:events',
-];
+const eventNames = ['nextmq', 'myApp', 'helloMcNerd', 'app:jobs', 'shop:actions', 'analytics:track', 'admin:commands', 'portal:show', 'cart:update', 'user:events']
 
 export function RotatingEventName() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsVisible(false);
+      setIsVisible(false)
       setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % eventNames.length);
-        setIsVisible(true);
-      }, 200); // Half of transition duration for smooth fade
-    }, 2000); // Change every 2 seconds
+        setCurrentIndex((prev) => (prev + 1) % eventNames.length)
+        setIsVisible(true)
+      }, 200) // Half of transition duration for smooth fade
+    }, 2000) // Change every 2 seconds
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="flex items-center gap-3 flex-wrap justify-center py-4">
@@ -43,6 +32,5 @@ export function RotatingEventName() {
       </code>
       <span className="text-gray-600 dark:text-gray-400 text-sm font-medium">or your own!</span>
     </div>
-  );
+  )
 }
-

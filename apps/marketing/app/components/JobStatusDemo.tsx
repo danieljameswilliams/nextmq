@@ -1,45 +1,45 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useJobStatus, useNextmq } from 'nextmq';
-import { ShoppingBag, CheckCircle2, Loader2, AlertCircle, Heart, Share2, Star } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Heart, Loader2, Share2, ShoppingBag, Star } from 'lucide-react'
+import { useJobStatus, useNextmq } from 'nextmq'
+import { useState } from 'react'
 
 export function JobStatusDemo() {
-  const [jobId, setJobId] = useState<string | null>(null);
-  const { status, error } = useJobStatus(jobId);
-  const queue = useNextmq();
+  const [jobId, setJobId] = useState<string | null>(null)
+  const { status, error } = useJobStatus(jobId)
+  const queue = useNextmq()
 
   const handleAddToCart = () => {
     // Reset if already completed or failed
     if (status === 'completed' || status === 'failed') {
-      setJobId(null);
+      setJobId(null)
       // Small delay to show the reset
       setTimeout(() => {
-        const productId = `PROD-${Date.now()}`;
+        const productId = `PROD-${Date.now()}`
         const newJobId = queue.enqueue('cart.add', {
           ean: productId,
           quantity: 1,
-        });
+        })
         if (newJobId) {
-          setJobId(newJobId);
+          setJobId(newJobId)
         }
-      }, 100);
-      return;
+      }, 100)
+      return
     }
-    
+
     // Generate a unique product ID for this demo
-    const productId = `PROD-${Date.now()}`;
-    
+    const productId = `PROD-${Date.now()}`
+
     // Enqueue the job directly to get the job ID
     const newJobId = queue.enqueue('cart.add', {
       ean: productId,
       quantity: 1,
-    });
-    
+    })
+
     if (newJobId) {
-      setJobId(newJobId);
+      setJobId(newJobId)
     }
-  };
+  }
 
   const getButtonContent = () => {
     if (status === 'processing') {
@@ -48,7 +48,7 @@ export function JobStatusDemo() {
           <Loader2 className="w-4 h-4 animate-spin" />
           Adding to Cart...
         </>
-      );
+      )
     }
     if (status === 'completed') {
       return (
@@ -56,7 +56,7 @@ export function JobStatusDemo() {
           <CheckCircle2 className="w-4 h-4" />
           Added to Cart!
         </>
-      );
+      )
     }
     if (status === 'failed') {
       return (
@@ -64,28 +64,28 @@ export function JobStatusDemo() {
           <AlertCircle className="w-4 h-4" />
           Failed - Try Again
         </>
-      );
+      )
     }
     return (
       <>
         <ShoppingBag className="w-4 h-4" />
         Add to Cart
       </>
-    );
-  };
+    )
+  }
 
   const getButtonStyles = () => {
     if (status === 'processing') {
-      return 'bg-blue-500 hover:bg-blue-600 cursor-wait';
+      return 'bg-blue-500 hover:bg-blue-600 cursor-wait'
     }
     if (status === 'completed') {
-      return 'bg-green-500 hover:bg-green-600';
+      return 'bg-green-500 hover:bg-green-600'
     }
     if (status === 'failed') {
-      return 'bg-red-500 hover:bg-red-600';
+      return 'bg-red-500 hover:bg-red-600'
     }
-    return 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600';
-  };
+    return 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -96,9 +96,7 @@ export function JobStatusDemo() {
           <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
         </div>
-        <div className="flex-1 bg-white dark:bg-gray-800 rounded px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 text-center font-mono">
-          example.com/product
-        </div>
+        <div className="flex-1 bg-white dark:bg-gray-800 rounded px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 text-center font-mono">example.com/product</div>
       </div>
       <div className="bg-white dark:bg-gray-950 rounded-b-2xl border-x border-b border-gray-200 dark:border-gray-800 overflow-hidden shadow-xl">
         {/* Product Image Section */}
@@ -111,23 +109,16 @@ export function JobStatusDemo() {
                   <div className="w-32 h-32 bg-white/80 dark:bg-gray-900/80 rounded-full flex items-center justify-center mb-4 mx-auto">
                     <ShoppingBag className="w-16 h-16 text-gray-400" />
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                    Fashion Product Image
-                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Fashion Product Image</p>
                 </div>
               </div>
               {/* Badge */}
-              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                New Arrival
-              </div>
+              <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">New Arrival</div>
             </div>
             {/* Thumbnails */}
             <div className="grid grid-cols-4 gap-2">
               {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="aspect-square bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 rounded-lg border-2 border-gray-200 dark:border-gray-800 pointer-events-none opacity-60"
-                />
+                <div key={i} className="aspect-square bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 rounded-lg border-2 border-gray-200 dark:border-gray-800 pointer-events-none opacity-60" />
               ))}
             </div>
           </div>
@@ -136,24 +127,15 @@ export function JobStatusDemo() {
           <div className="space-y-6">
             {/* Brand & Title */}
             <div>
-              <div className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">
-                FASHION BRAND
-              </div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-                Premium Cotton T-Shirt
-              </h1>
+              <div className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">FASHION BRAND</div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">Premium Cotton T-Shirt</h1>
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex items-center">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${i <= 4 ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
-                    />
+                    <Star key={i} className={`w-4 h-4 ${i <= 4 ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
                   ))}
                 </div>
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  (128 reviews)
-                </span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">(128 reviews)</span>
               </div>
             </div>
 
@@ -161,24 +143,15 @@ export function JobStatusDemo() {
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">$49.99</span>
               <span className="text-xl text-gray-400 line-through">$79.99</span>
-              <span className="text-sm font-semibold text-red-500 bg-red-50 dark:bg-red-950/30 px-2 py-1 rounded">
-                37% OFF
-              </span>
+              <span className="text-sm font-semibold text-red-500 bg-red-50 dark:bg-red-950/30 px-2 py-1 rounded">37% OFF</span>
             </div>
 
             {/* Size Selection */}
             <div>
-              <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                Size
-              </div>
+              <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Size</div>
               <div className="flex gap-2">
                 {['XS', 'S', 'M', 'L', 'XL'].map((size) => (
-                  <button
-                    key={size}
-                    type="button"
-                    disabled
-                    className="w-12 h-12 border-2 border-gray-300 dark:border-gray-700 rounded-lg font-semibold text-gray-700 dark:text-gray-300 opacity-50 cursor-not-allowed pointer-events-none"
-                  >
+                  <button key={size} type="button" disabled className="w-12 h-12 border-2 border-gray-300 dark:border-gray-700 rounded-lg font-semibold text-gray-700 dark:text-gray-300 opacity-50 cursor-not-allowed pointer-events-none">
                     {size}
                   </button>
                 ))}
@@ -187,22 +160,14 @@ export function JobStatusDemo() {
 
             {/* Color Selection */}
             <div>
-              <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                Color
-              </div>
+              <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">Color</div>
               <div className="flex gap-3">
                 {[
                   { name: 'Black', color: 'bg-gray-900' },
                   { name: 'Navy', color: 'bg-blue-900' },
                   { name: 'White', color: 'bg-white border-2 border-gray-300' },
                 ].map((c) => (
-                  <button
-                    key={c.name}
-                    type="button"
-                    disabled
-                    className={`w-10 h-10 ${c.color} rounded-full opacity-50 cursor-not-allowed pointer-events-none`}
-                    title={c.name}
-                  />
+                  <button key={c.name} type="button" disabled className={`w-10 h-10 ${c.color} rounded-full opacity-50 cursor-not-allowed pointer-events-none`} title={c.name} />
                 ))}
               </div>
             </div>
@@ -215,13 +180,14 @@ export function JobStatusDemo() {
                 disabled={status === 'processing'}
                 className={`w-full flex items-center justify-center gap-2 px-6 py-5 text-white font-bold text-lg rounded-xl transition-all shadow-2xl hover:shadow-3xl hover:scale-[1.02] active:scale-[0.98] ${getButtonStyles()} disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-2xl`}
                 style={{
-                  boxShadow: status === 'processing' 
-                    ? '0 20px 25px -5px rgba(59, 130, 246, 0.3), 0 10px 10px -5px rgba(59, 130, 246, 0.2)'
-                    : status === 'completed'
-                    ? '0 20px 25px -5px rgba(34, 197, 94, 0.3), 0 10px 10px -5px rgba(34, 197, 94, 0.2)'
-                    : status === 'failed'
-                    ? '0 20px 25px -5px rgba(239, 68, 68, 0.3), 0 10px 10px -5px rgba(239, 68, 68, 0.2)'
-                    : '0 20px 25px -5px rgba(37, 99, 235, 0.4), 0 10px 10px -5px rgba(37, 99, 235, 0.3)'
+                  boxShadow:
+                    status === 'processing'
+                      ? '0 20px 25px -5px rgba(59, 130, 246, 0.3), 0 10px 10px -5px rgba(59, 130, 246, 0.2)'
+                      : status === 'completed'
+                        ? '0 20px 25px -5px rgba(34, 197, 94, 0.3), 0 10px 10px -5px rgba(34, 197, 94, 0.2)'
+                        : status === 'failed'
+                          ? '0 20px 25px -5px rgba(239, 68, 68, 0.3), 0 10px 10px -5px rgba(239, 68, 68, 0.2)'
+                          : '0 20px 25px -5px rgba(37, 99, 235, 0.4), 0 10px 10px -5px rgba(37, 99, 235, 0.3)',
                 }}
               >
                 {getButtonContent()}
@@ -229,19 +195,11 @@ export function JobStatusDemo() {
 
               {/* Secondary Actions */}
               <div className="flex gap-3">
-                <button
-                  type="button"
-                  disabled
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg opacity-50 cursor-not-allowed pointer-events-none"
-                >
+                <button type="button" disabled className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg opacity-50 cursor-not-allowed pointer-events-none">
                   <Heart className="w-4 h-4" />
                   Wishlist
                 </button>
-                <button
-                  type="button"
-                  disabled
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg opacity-50 cursor-not-allowed pointer-events-none"
-                >
+                <button type="button" disabled className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg opacity-50 cursor-not-allowed pointer-events-none">
                   <Share2 className="w-4 h-4" />
                   Share
                 </button>
@@ -274,9 +232,7 @@ export function JobStatusDemo() {
                   {status === 'failed' && (
                     <>
                       <AlertCircle className="w-4 h-4 text-red-500" />
-                      <span className="text-sm text-red-600 dark:text-red-400">
-                        Failed: {error instanceof Error ? error.message : 'Unknown error'}
-                      </span>
+                      <span className="text-sm text-red-600 dark:text-red-400">Failed: {error instanceof Error ? error.message : 'Unknown error'}</span>
                     </>
                   )}
                 </div>
@@ -337,6 +293,5 @@ function AddToCartButton({ productId }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
-

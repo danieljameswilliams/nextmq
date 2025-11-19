@@ -1,16 +1,16 @@
 // src/NextMQDevTools.tsx
 /**
  * NextMQ DevTools - Development tool for debugging NextMQ jobs and events
- * 
+ *
  * Displays:
  * - Event buffer state (events waiting for processor)
  * - Job queue state (jobs waiting to be processed)
  * - Requirement status for each job
- * 
+ *
  * @example
  * ```tsx
  * import { NextMQDevTools } from 'nextmq';
- * 
+ *
  * export default function Page() {
  *   return (
  *     <>
@@ -22,73 +22,73 @@
  * ```
  */
 
-'use client';
+'use client'
 
-import { useState, useEffect, useContext } from 'react';
-import { NextmqContext } from './NextMQClientProvider';
-import { getEventBufferState } from './NextMQRootClientEventBridge';
-import { getRequirement } from './requirements';
+import { useContext, useEffect, useState } from 'react'
+import { getEventBufferState } from './event-bridge'
+import { NextmqContext } from './provider'
+import { getRequirement } from './requirements'
 
 /** Debug state structure for job queue */
 type QueueDebugState = {
   queue: Array<{
-    id: string;
-    type: string;
-    payload: unknown;
-    requirements?: string[];
-    createdAt: number;
-    requirementsMet: boolean;
-    hasProcessor: boolean;
-  }>;
-  isProcessing: boolean;
-  processorReady: boolean;
-};
+    id: string
+    type: string
+    payload: unknown
+    requirements?: string[]
+    createdAt: number
+    requirementsMet: boolean
+    hasProcessor: boolean
+  }>
+  isProcessing: boolean
+  processorReady: boolean
+}
 
 /**
  * NextMQ DevTools Component
- * 
+ *
  * Provides a floating panel for debugging NextMQ jobs and events.
  * Only renders on the client to avoid hydration mismatches.
  */
 export function NextMQDevTools() {
-  const [isMounted, setIsMounted] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const queue = useContext(NextmqContext);
+  const [isMounted, setIsMounted] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const queue = useContext(NextmqContext)
 
   const [debugState, setDebugState] = useState<{
-    eventBuffer: ReturnType<typeof getEventBufferState>;
-    queue: QueueDebugState | null;
+    eventBuffer: ReturnType<typeof getEventBufferState>
+    queue: QueueDebugState | null
   }>({
     eventBuffer: getEventBufferState(),
     queue: null,
-  });
+  })
 
   // Only render on client to avoid hydration mismatch
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) return
 
     const updateDebugState = () => {
       setDebugState({
         eventBuffer: getEventBufferState(),
         queue: queue ? queue.getDebugState() : null,
-      });
-    };
+      })
+    }
 
     // Update immediately
-    updateDebugState();
+    updateDebugState()
 
     // Update every 500ms when open
-    const interval = setInterval(updateDebugState, 500);
+    const interval = setInterval(updateDebugState, 500)
 
-    return () => clearInterval(interval);
-  }, [isOpen, queue]);
+    return () => clearInterval(interval)
+  }, [isOpen, queue])
 
   // Don't render anything on server to avoid hydration mismatch
-  if (!isMounted) return null;
+  if (!isMounted) return null
 
   return (
     <div
@@ -103,6 +103,7 @@ export function NextMQDevTools() {
     >
       {/* Toggle Button */}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         style={{
           padding: '8px 12px',
@@ -148,6 +149,7 @@ export function NextMQDevTools() {
           >
             <span>NextMQ DevTools</span>
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
               style={{
                 background: 'none',
@@ -187,9 +189,7 @@ export function NextMQDevTools() {
                 <span>Event Buffer</span>
                 <span
                   style={{
-                    backgroundColor: debugState.eventBuffer.processorReady
-                      ? '#10b981'
-                      : '#f59e0b',
+                    backgroundColor: debugState.eventBuffer.processorReady ? '#10b981' : '#f59e0b',
                     color: 'white',
                     padding: '2px 6px',
                     borderRadius: '4px',
@@ -197,9 +197,7 @@ export function NextMQDevTools() {
                     fontWeight: '600',
                   }}
                 >
-                  {debugState.eventBuffer.processorReady
-                    ? 'READY'
-                    : 'WAITING'}
+                  {debugState.eventBuffer.processorReady ? 'READY' : 'WAITING'}
                 </span>
               </div>
               {debugState.eventBuffer.bufferLength === 0 ? (
@@ -216,9 +214,9 @@ export function NextMQDevTools() {
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {debugState.eventBuffer.buffer.map((event, idx) => (
+                  {debugState.eventBuffer.buffer.map((event) => (
                     <div
-                      key={idx}
+                      key={`${event.type}-${event.timestamp}`}
                       style={{
                         padding: '8px',
                         backgroundColor: '#f9fafb',
@@ -226,18 +224,9 @@ export function NextMQDevTools() {
                         border: '1px solid #e5e7eb',
                       }}
                     >
-                      <div style={{ fontWeight: '600', marginBottom: '4px' }}>
-                        {event.type}
-                      </div>
-                      <div style={{ fontSize: '11px', color: '#6b7280' }}>
-                        Requirements:{' '}
-                        {event.requirements?.length
-                          ? event.requirements.join(', ')
-                          : 'none'}
-                      </div>
-                      <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '4px' }}>
-                        {new Date(event.timestamp).toLocaleTimeString()}
-                      </div>
+                      <div style={{ fontWeight: '600', marginBottom: '4px' }}>{event.type}</div>
+                      <div style={{ fontSize: '11px', color: '#6b7280' }}>Requirements: {event.requirements?.length ? event.requirements.join(', ') : 'none'}</div>
+                      <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '4px' }}>{new Date(event.timestamp).toLocaleTimeString()}</div>
                     </div>
                   ))}
                 </div>
@@ -260,9 +249,7 @@ export function NextMQDevTools() {
                 {debugState.queue && (
                   <span
                     style={{
-                      backgroundColor: debugState.queue.isProcessing
-                        ? '#3b82f6'
-                        : '#6b7280',
+                      backgroundColor: debugState.queue.isProcessing ? '#3b82f6' : '#6b7280',
                       color: 'white',
                       padding: '2px 6px',
                       borderRadius: '4px',
@@ -305,18 +292,9 @@ export function NextMQDevTools() {
                       key={job.id}
                       style={{
                         padding: '8px',
-                        backgroundColor: job.requirementsMet
-                          ? job.hasProcessor
-                            ? '#ecfdf5'
-                            : '#fef3c7'
-                          : '#fee2e2',
+                        backgroundColor: job.requirementsMet ? (job.hasProcessor ? '#ecfdf5' : '#fef3c7') : '#fee2e2',
                         borderRadius: '4px',
-                        border: `1px solid ${job.requirementsMet
-                          ? job.hasProcessor
-                            ? '#10b981'
-                            : '#f59e0b'
-                          : '#ef4444'
-                          }`,
+                        border: `1px solid ${job.requirementsMet ? (job.hasProcessor ? '#10b981' : '#f59e0b') : '#ef4444'}`,
                       }}
                     >
                       <div
@@ -366,9 +344,7 @@ export function NextMQDevTools() {
                                 display: 'inline-block',
                                 marginRight: '4px',
                                 padding: '1px 4px',
-                                backgroundColor: getRequirement(req)
-                                  ? '#10b981'
-                                  : '#ef4444',
+                                backgroundColor: getRequirement(req) ? '#10b981' : '#ef4444',
                                 color: 'white',
                                 borderRadius: '3px',
                                 fontSize: '9px',
@@ -380,19 +356,16 @@ export function NextMQDevTools() {
                         </div>
                       )}
                       <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '4px' }}>
-                        ID: {job.id.slice(0, 8)}... |{' '}
-                        {new Date(job.createdAt).toLocaleTimeString()}
+                        ID: {job.id.slice(0, 8)}... | {new Date(job.createdAt).toLocaleTimeString()}
                       </div>
                     </div>
                   ))}
                 </div>
               )}
             </div>
-
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }
-

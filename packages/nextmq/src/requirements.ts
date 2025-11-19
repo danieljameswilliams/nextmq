@@ -1,22 +1,8 @@
-// src/requirements.ts
 /**
  * Requirements System - Gate jobs until requirements are met
  *
- * Use this to delay job processing until conditions are met
- * (e.g., user consent, authentication, feature flags).
- *
- * Jobs with requirements will wait in the queue until all specified
- * requirements are set to `true`.
- *
- * @example
- * ```ts
- * import { setRequirement } from 'nextmq';
- *
- * // Enable a requirement
- * setRequirement('necessaryConsent', true);
- *
- * // Jobs with requirements: ['necessaryConsent'] will now process
- * ```
+ * Delay job processing until conditions are met (e.g., user consent, authentication).
+ * Jobs with requirements wait in the queue until all specified requirements are `true`.
  */
 
 /** Requirement key identifier (e.g., 'necessaryConsent', 'userAuthenticated') */

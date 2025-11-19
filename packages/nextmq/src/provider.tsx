@@ -1,33 +1,10 @@
-// src/NextMQClientProvider.tsx
 /**
  * NextMQ Client Provider - Creates a JobQueue and connects it to the EventBridge.
  *
  * **Simple Flow:** CustomEvent → EventBridge → Provider → Processor → Handler
  *
- * This is the core component that:
- * 1. Creates a JobQueue instance
- * 2. Connects to NextMQRootClientEventBridge to receive CustomEvents
- * 3. Processes jobs using your processor function (with dynamic imports)
- * 4. Renders JSX components returned from processors
- *
- * @example
- * ```tsx
- * // app/layout.tsx
- * import { NextMQClientProvider } from 'nextmq';
- * import processor from './processors';
- *
- * export default function RootLayout({ children }) {
- *   return (
- *     <html>
- *       <body>
- *         <NextMQClientProvider processor={processor}>
- *           {children}
- *         </NextMQClientProvider>
- *       </body>
- *     </html>
- *   );
- * }
- * ```
+ * Creates a JobQueue, connects to EventBridge, processes jobs via processor function,
+ * and renders JSX components returned from processors.
  */
 
 'use client'
@@ -57,23 +34,17 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
   const [queue] = useState(() => new JobQueue())
   const [renderedComponents, setRenderedComponents] = useState<Map<string, RenderedComponent>>(new Map())
 
-  /**
-   * Render callback: when a processor returns JSX, add it to rendered components.
-   * If element is null, remove components for that jobId.
-   */
   const handleRender = useCallback<RenderCallback>((element, jobId) => {
     setRenderedComponents((prev) => {
       const next = new Map(prev)
 
       if (!element) {
-        // Remove all components for this jobId
         for (const [id, comp] of next.entries()) {
           if (comp.jobId === jobId) {
             next.delete(id)
           }
         }
       } else {
-        // Add new component with unique ID
         const id = `nextmq-render-${jobId}-${Date.now()}`
         next.set(id, { id, element, jobId })
       }
@@ -82,7 +53,6 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
     })
   }, [])
 
-  // Set up render callback for JSX components returned from processors
   useEffect(() => {
     queue.setRenderCallback(handleRender)
     return () => {
@@ -90,7 +60,6 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
     }
   }, [queue, handleRender])
 
-  // Connect to EventBridge to receive CustomEvents
   useEffect(() => {
     const processEvent = (event: CustomEvent<NextmqEventDetail>) => {
       const { type, payload, requirements, dedupeKey, delay } = event.detail
@@ -103,7 +72,6 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
     }
   }, [queue])
 
-  // Set the processor function
   useEffect(() => {
     if (typeof processor !== 'function') {
       console.error(
@@ -150,23 +118,21 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
           // Ignore validation test errors
         })
       } catch (_err) {
-        // Processor validation failed, but continue (might be intentional)
+        // Ignore validation errors
       }
     }
 
     queue.setProcessor(processor)
   }, [queue, processor])
 
-  // Development warnings
   useEffect(() => {
-    if (typeof window === 'undefined') return // Server-side
+    if (typeof window === 'undefined') return
 
     const isDevelopment = typeof process !== 'undefined' && process.env.NODE_ENV !== 'production'
 
     if (isDevelopment) {
       markProviderMounted()
 
-      // Check if EventBridge is mounted (with delay to allow EventBridge to mount first)
       const checkEventBridge = setTimeout(() => {
         if (!isEventBridgeMounted()) {
           console.warn(
@@ -182,7 +148,6 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
         }
       }, 100)
 
-      // Warn about multiple providers
       const checkMultipleProviders = setTimeout(() => {
         const existingProviders = document.querySelectorAll('[data-nextmq-provider]')
         if (existingProviders.length > 1) {
@@ -202,10 +167,6 @@ export function NextMQClientProvider({ children, processor }: { children: ReactN
     <NextmqContext.Provider value={queue}>
       <div data-nextmq-provider style={{ display: 'contents' }}>
         {children}
-        {/* 
-          Render slot for JSX components returned from processors.
-          Components rendered here appear as siblings to {children} in the DOM.
-        */}
         {renderedComponents.size > 0 && (
           <div data-nextmq-render-slot style={{ display: 'contents' }}>
             {Array.from(renderedComponents.values()).map(({ id, element }) => (

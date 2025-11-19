@@ -7,6 +7,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "biome format --write .",
+    "check": "biome check --write .",
     "check-types": "turbo run check-types",
     "test:e2e": "cd apps/demo && npm run test:e2e",
     "test:e2e:ui": "cd apps/demo && npm run test:e2e:ui",

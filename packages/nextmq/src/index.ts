@@ -1,4 +1,3 @@
-// src/index.ts
 /**
  * NextMQ - Message Queue for Next.js
  *
@@ -68,17 +67,11 @@
  *       payload: { ean: '123' },
  *       requirements: ['necessaryConsent'], // Optional
  *       dedupeKey: 'cart-add-123', // Optional: prevent duplicates
- *       delay: 1000 // Optional: delay in milliseconds before processing
+ *       delay: 1000 // Optional: delay in milliseconds
  *       // 💡 Tip: delay + dedupeKey = automatic debouncing!
  *     }
  *   })
  * );
- * ```
- *
- * 💡 **Custom Event Names:** You can use a custom event name by passing `eventName` to `NextMQRootClientEventBridge`:
- * ```tsx
- * <NextMQRootClientEventBridge eventName="helloMcNerd" />
- * // Then dispatch: new CustomEvent('helloMcNerd', { detail: {...} })
  * ```
  *
  * 5. **Track job status** with React hooks:
@@ -91,7 +84,7 @@
  *   const queue = useNextmq();
  *
  *   const handleClick = () => {
- *     const id = queue.enqueue('cart.add', { ean: '123' }, [], undefined, 1000); // Optional delay: 1000ms
+ *     const id = queue.enqueue('cart.add', { ean: '123' }, [], undefined, 1000);
  *     if (id) setJobId(id);
  *   };
  *

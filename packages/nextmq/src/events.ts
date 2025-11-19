@@ -1,27 +1,9 @@
-// src/events.ts
 /**
  * NextMQ Events - CustomEvent definitions for job dispatching
  *
  * **Simple Flow:** CustomEvent → EventBridge → Provider → Processor → Handler
  *
- * Dispatch jobs using CustomEvents. The EventBridge listens for these events
- * and routes them to the JobQueue.
- *
- * @example
- * ```ts
- * import { NEXTMQ_EVENT_NAME } from 'nextmq';
- *
- * window.dispatchEvent(
- *   new CustomEvent(NEXTMQ_EVENT_NAME, {
- *     detail: {
- *       type: 'cart.add',
- *       payload: { ean: '123', quantity: 1 },
- *       requirements: ['necessaryConsent'], // Optional: gate until requirement is met
- *       delay: 500 // Optional: delay in milliseconds before processing
- *     }
- *   })
- * );
- * ```
+ * Dispatch jobs using CustomEvents. The EventBridge listens and routes to JobQueue.
  */
 
 import type { JobType } from './job-queue'

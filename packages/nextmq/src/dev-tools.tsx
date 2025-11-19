@@ -1,25 +1,7 @@
-// src/NextMQDevTools.tsx
 /**
  * NextMQ DevTools - Development tool for debugging NextMQ jobs and events
  *
- * Displays:
- * - Event buffer state (events waiting for processor)
- * - Job queue state (jobs waiting to be processed)
- * - Requirement status for each job
- *
- * @example
- * ```tsx
- * import { NextMQDevTools } from 'nextmq';
- *
- * export default function Page() {
- *   return (
- *     <>
- *       <NextMQDevTools />
- *       <YourPageContent />
- *     </>
- *   );
- * }
- * ```
+ * Displays event buffer state, job queue state, and requirement status.
  */
 
 'use client'
@@ -63,7 +45,6 @@ export function NextMQDevTools() {
     queue: null,
   })
 
-  // Only render on client to avoid hydration mismatch
   useEffect(() => {
     setIsMounted(true)
   }, [])
@@ -78,16 +59,12 @@ export function NextMQDevTools() {
       })
     }
 
-    // Update immediately
     updateDebugState()
-
-    // Update every 500ms when open
     const interval = setInterval(updateDebugState, 500)
 
     return () => clearInterval(interval)
   }, [isOpen, queue])
 
-  // Don't render anything on server to avoid hydration mismatch
   if (!isMounted) return null
 
   return (
